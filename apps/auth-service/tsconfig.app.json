@@ -5,11 +5,15 @@
     "types": [
       "node"
     ],
-    "rootDir": "src",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "rootDir": "../../",
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "resolveJsonModule": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "../../packages/**/*.ts",
+    "../../generated/prisma/*.ts",
+    "src/**/*.json"
   ],
   "exclude": [
     "out-tsc",

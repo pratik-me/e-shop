@@ -2,7 +2,13 @@
   "name": "@eshop/auth-service",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "dev": "node src/main.ts"
+  },
   "nx": {
+    "name": "@eshop/auth-service",
+    "projectType": "application",
+    "sourceRoot": "auth-service/src",
     "targets": {
       "build": {
         "executor": "@nx/esbuild:esbuild",
@@ -14,9 +20,9 @@
           "platform": "node",
           "outputPath": "apps/auth-service/dist",
           "format": [
-            "cjs"
+            "esm"
           ],
-          "bundle": false,
+          "bundle": true,
           "main": "apps/auth-service/src/main.ts",
           "tsConfig": "apps/auth-service/tsconfig.app.json",
           "assets": [
@@ -26,7 +32,12 @@
             "sourcemap": true,
             "outExtension": {
               ".js": ".js"
-            }
+            },
+            "external": [
+              "@prisma/client",
+              "@prisma/client/*",
+              "ioredis"
+            ]
           }
         },
         "configurations": {
@@ -37,47 +48,17 @@
               "sourcemap": false,
               "outExtension": {
                 ".js": ".js"
-              }
+              },
+              "external": [
+                "@prisma/client",
+                "@prisma/client/*",
+                "ioredis"
+              ]
             }
           }
         }
       },
-      "prune-lockfile": {
-        "dependsOn": [
-          "build"
-        ],
-        "cache": true,
-        "executor": "@nx/js:prune-lockfile",
-        "outputs": [
-          "{workspaceRoot}/apps/auth-service/dist/package.json",
-          "{workspaceRoot}/apps/auth-service/dist/package-lock.json"
-        ],
-        "options": {
-          "buildTarget": "build"
-        }
-      },
-      "copy-workspace-modules": {
-        "dependsOn": [
-          "build"
-        ],
-        "cache": true,
-        "outputs": [
-          "{workspaceRoot}/apps/auth-service/dist/workspace_modules"
-        ],
-        "executor": "@nx/js:copy-workspace-modules",
-        "options": {
-          "buildTarget": "build"
-        }
-      },
-      "prune": {
-        "dependsOn": [
-          "prune-lockfile",
-          "copy-workspace-modules"
-        ],
-        "executor": "nx:noop"
-      },
       "serve": {
-        "continuous": true,
         "executor": "@nx/js:node",
         "defaultConfiguration": "development",
         "dependsOn": [
@@ -100,16 +81,7 @@
         "options": {
           "passWithNoTests": true
         }
-      },
-      "docker:build": {
-        "dependsOn": [
-          "build",
-          "prune"
-        ]
       }
     }
-  },
-  "dependencies": {
-    "express": "^4.21.2"
   }
 }
