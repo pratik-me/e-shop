@@ -174,3 +174,5 @@ export const resetUserPassword = async(req: Request, res: Response, next: NextFu
         return next(error);
     }
 }
+
+// Seller
