@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": [
+      "node"
+    ],
+    "rootDir": "../../",
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../packages/**/*.ts",
+    "../../generated/prisma/*.ts",
+    "src/**/*.json"
+  ],
+  "exclude": [
+    "out-tsc",
+    "dist",
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
+}
