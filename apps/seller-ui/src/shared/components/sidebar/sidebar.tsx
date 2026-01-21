@@ -3,6 +3,10 @@ import useSeller from 'apps/seller-ui/src/hooks/useSeller';
 import useSidebar from 'apps/seller-ui/src/hooks/useSidebar';
 import { usePathname } from 'next/navigation';
 import React, { useEffect } from 'react'
+import { Box } from '../box';
+import Link from 'next/link';
+import { Sidebar } from './sidebar.styles';
+import ShopLogo from 'apps/seller-ui/src/assets/svgs/shop-logo';
 
 const SidebarWrapper = () => {
   const {activeSidebar, setActiveSidebar} = useSidebar();
@@ -15,7 +19,24 @@ const SidebarWrapper = () => {
 
   const getIconColor = (route: string) => activeSidebar === route ? "#0085ff" : "#969696";
   return (
-    
+    <Box $styles={{height: "100vh", zIndex: "202", position: "sticky", padding: "8px", top: "0", overflowY: "scroll", scrollbarWidth: "none",}} className='sidebar-wrapper'>
+      <Sidebar.Header>
+        <Box>
+          <Link href={"/"} className='flex justify-center text-center gap-2 '>
+            <ShopLogo/>
+            <Box>
+              <h3 className='text-xl font-medium text-[#ecedee]'>
+                {seller?.shop?.name}
+              </h3>
+
+              <h5 className='font-medium text-xs text-[#ecedeecf] whitespace-nowrap overflow-hidden text-ellipsis max-w-[170px] pl-2'>
+                {seller?.shop?.address}
+              </h5>
+            </Box>
+          </Link>
+        </Box>
+      </Sidebar.Header>
+    </Box>
   )
 }
 

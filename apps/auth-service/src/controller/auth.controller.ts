@@ -74,6 +74,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const isMatch = await bcrypt.compare(password, user.password!);
         if (!isMatch) return next(new AuthError("Invalid email or password."));
 
+        // Before login, delete seller access and refresh tokens
+        res.clearCookie("seller-access-token");
+        res.clearCookie("seller-refresh-token");
+
         // Tokenization
         const accessToken = jwt.sign({ id: user.id, role: "user" }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
         const refreshToken = jwt.sign({ id: user.id, role: "user" }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
@@ -91,7 +95,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+export const refreshToken = async (req: any, res: Response, next: NextFunction) => {
     try {
         const refreshToken = req.cookies["refresh_token"] || req.cookies["seller-refresh-token"] || req.headers.authorization?.split(" ")[1];
 
@@ -114,6 +118,8 @@ export const refreshToken = async (req: Request, res: Response, next: NextFuncti
 
         if(decoded.role === "user") setCookie(res, "access_token", newAccessToken);
         else if (decoded.role === "seller") setCookie(res, "seller-access-token", newAccessToken);
+
+        req.role = decoded.role;
 
         return res.status(201).json({
             success: true,
@@ -307,6 +313,10 @@ export const loginSeller = async(req: Request, res:Response, next:NextFunction) 
 
         const isMatch = await bcrypt.compare(password, seller.password!);
         if(!isMatch) return next(new ValidationError("Invalid email or password."));
+
+        // Before login, delete user access and refresh token
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
 
         const accessToken = jwt.sign(
             {id: seller.id, role: "seller"},
