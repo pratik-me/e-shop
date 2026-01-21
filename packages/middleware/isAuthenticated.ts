@@ -10,19 +10,19 @@ const isAuthenticated = async(req: any, res:Response, next:NextFunction) => {
             success: false,
         })
 
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {id: string, role: "User" | "Seller"};
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {id: string, role: "user" | "seller"};
         if(!decoded) return res.status(401).json({
             message: "Unauthorized! Invalid token.",
             success: false,
         })
 
         let account;
-        if(req.role === "User") {
+        if(req.role === "user") {
             account = await prisma.users.findUnique({
                 where: {id: decoded.id}
             });
             req.user = account;
-        } else if (req.role === "Seller") {
+        } else if (req.role === "seller") {
             account = await prisma.sellers.findUnique({
                 where: {id: decoded.id},
                 include: {shop: true},

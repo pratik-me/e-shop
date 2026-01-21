@@ -1,9 +1,9 @@
-import React from 'react'
+import {useAtom} from "jotai";
+import { activeSidebarItem } from '../configs/constants';
 
 const useSidebar = () => {
-  return (
-    <div>useSidebar</div>
-  )
+    const [activeSidebar, setActiveSidebar] = useAtom(activeSidebarItem);
+    return {activeSidebar, setActiveSidebar}
 }
 
-export default useSidebar
+export default useSidebar;
