@@ -7,6 +7,10 @@ import { Box } from '../box';
 import Link from 'next/link';
 import { Sidebar } from './sidebar.styles';
 import ShopLogo from 'apps/seller-ui/src/assets/svgs/shop-logo';
+import SidebarItem from './sidebar.item';
+import HomeIcon from 'apps/seller-ui/src/assets/svgs/HomeIcon';
+import SidebarMenu from './sidebar.menu';
+import { BellPlusIcon, BellRing, CalendarPlusIcon, Inbox, ListOrderedIcon, LogOut, Mail, MailIcon, PackageSearchIcon, ReceiptIndianRupeeIcon, Settings, SettingsIcon, SquarePlusIcon, TicketPercentIcon } from 'lucide-react';
 
 const SidebarWrapper = () => {
   const {activeSidebar, setActiveSidebar} = useSidebar();
@@ -36,6 +40,39 @@ const SidebarWrapper = () => {
           </Link>
         </Box>
       </Sidebar.Header>
+      <div className='block my-3 h-full'>
+        <Sidebar.Body className='body sidebar'>\
+          <SidebarItem title="Dashboard" icon={<HomeIcon/>} isActive={activeSidebar === "/dashboard"} href={"/dashboard"}/>
+          <div className='mt-2 block'>
+
+            <SidebarMenu title='Main Menu'>
+              <SidebarItem isActive={activeSidebar === "/orders"} title="Orders" href='/dashboard/orders' icon={<ListOrderedIcon/>} />
+              <SidebarItem isActive={activeSidebar === "/dashboard/payments"} title="Payments" href='/dashobard/payments' icon={<ReceiptIndianRupeeIcon/>} />
+            </SidebarMenu>
+
+            <SidebarMenu title='Products'>
+              <SidebarItem isActive={activeSidebar === "/dashboard/create-product"} title="Create Product" href='/dashobard/create-product' icon={<SquarePlusIcon/>} />
+              <SidebarItem isActive={activeSidebar === "/dashboard/all-products"} title="All Products" href='/dashobard/all-products' icon={<PackageSearchIcon/>} />
+            </SidebarMenu>
+
+            <SidebarMenu title='Events'>
+              <SidebarItem isActive={activeSidebar === "/dashobard/create-event"} title='Create Event' href='/dashobard/create-event' icon={<CalendarPlusIcon />} />
+              <SidebarItem isActive={activeSidebar === "/dashobard/all-events"} title='All Events' href='/dashobard/all-events' icon={<BellPlusIcon />} />
+            </SidebarMenu>
+
+            <SidebarMenu title='Controllers'>
+              <SidebarItem isActive={activeSidebar === "/dashobard/inbox"} title='Inbox' href='/dashobard/inbox' icon={<MailIcon />} />
+              <SidebarItem isActive={activeSidebar === "/dashobard/settings"} title='Settings' href='/dashobard/settings' icon={<Settings />} />
+              <SidebarItem isActive={activeSidebar === "/dashobard/notification"} title='Notifications' href='/dashobard/notifications' icon={<BellRing/>} />
+            </SidebarMenu>
+
+            <SidebarMenu title='Extras'>
+              <SidebarItem isActive={activeSidebar === "/dashobard/discount-codes"} title='Discount Codes' href='/dashobard/discount-codes' icon={<TicketPercentIcon/>} />
+              <SidebarItem isActive={activeSidebar === "/logout"} title='Logout' href='/' icon={<LogOut/>} />
+            </SidebarMenu>
+          </div>
+        </Sidebar.Body>
+      </div>
     </Box>
   )
 }
