@@ -106,17 +106,17 @@ export const refreshToken = async (req: any, res: Response, next: NextFunction) 
         if (!decoded || !decoded.id || !decoded.role) return next(new AuthError("Forbidden! Invalid refresh token."));
 
         let account;
-        if(decoded.role === "user") account = await prisma.users.findUnique({ where: { id: decoded.id } });
+        if (decoded.role === "user") account = await prisma.users.findUnique({ where: { id: decoded.id } });
         else if (decoded.role === "seller") account = await prisma.sellers.findUnique({
-            where : {id: decoded.id},
-            include: {shop: true},
+            where: { id: decoded.id },
+            include: { shop: true },
         });
 
         if (!account) return new AuthError("Forbidden! Account not found.");
 
         const newAccessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
 
-        if(decoded.role === "user") setCookie(res, "access_token", newAccessToken);
+        if (decoded.role === "user") setCookie(res, "access_token", newAccessToken);
         else if (decoded.role === "seller") setCookie(res, "seller-access-token", newAccessToken);
 
         req.role = decoded.role;
@@ -196,7 +196,7 @@ export const resetUserPassword = async (req: Request, res: Response, next: NextF
 // Seller
 export const registerSeller = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {name, email} = req.body;
+        const { name, email } = req.body;
 
         const existingSeller = await prisma.sellers.findUnique({ where: { email } });
         if (existingSeller) throw new ValidationError("Seller already exists with this email.");
@@ -285,8 +285,8 @@ export const createStripeConnectLink = async (req: Request, res: Response, next:
         })
 
         await prisma.sellers.update({
-            where: {id: sellerId},
-            data: {stripeId: account.id},
+            where: { id: sellerId },
+            data: { stripeId: account.id },
         });
 
         const accountLink = await stripe.accountLinks.create({
@@ -296,53 +296,53 @@ export const createStripeConnectLink = async (req: Request, res: Response, next:
             type: "account_onboarding",
         });
 
-        res.json({url: accountLink.url});
+        res.json({ url: accountLink.url });
     } catch (error) {
         return next(error);
     }
 }
 
-export const loginSeller = async(req: Request, res:Response, next:NextFunction) => {
+export const loginSeller = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
 
-        if(!email || !password) return next(new ValidationError("Email and password are required."));
+        if (!email || !password) return next(new ValidationError("Email and password are required."));
 
-        const seller = await prisma.sellers.findUnique({where: {email}});
-        if(!seller) return next(new ValidationError("Invalid email or password"));
+        const seller = await prisma.sellers.findUnique({ where: { email } });
+        if (!seller) return next(new ValidationError("Invalid email or password"));
 
         const isMatch = await bcrypt.compare(password, seller.password!);
-        if(!isMatch) return next(new ValidationError("Invalid email or password."));
+        if (!isMatch) return next(new ValidationError("Invalid email or password."));
 
         // Before login, delete user access and refresh token
         res.clearCookie("access_token");
         res.clearCookie("refresh_token");
 
         const accessToken = jwt.sign(
-            {id: seller.id, role: "seller"},
+            { id: seller.id, role: "seller" },
             process.env.ACCESS_TOKEN_SECRET as string,
-            {expiresIn: "15m"}
+            { expiresIn: "20m" }
         );
 
         const refreshToken = jwt.sign(
-            {id: seller.id, role: "seller"},
+            { id: seller.id, role: "seller" },
             process.env.REFRESH_TOKEN_SECRET as string,
-            {expiresIn: "7d"}
+            { expiresIn: "7d" }
         );
 
-        setCookie(res, "seller-refresh-token", refreshToken);
-        setCookie(res, "seller-access-token", accessToken);
+        setCookie(res, "seller-refresh-token", refreshToken, 7 * 24 * 60 * 60 * 1000);
+        setCookie(res, "seller-access-token", accessToken, 20 * 60 * 1000);
 
         res.status(200).json({
             message: "Login successful",
-            seller: {id: seller.id, email: seller.email, name: seller.name},
+            seller: { id: seller.id, email: seller.email, name: seller.name },
         });
     } catch (error) {
         next(error);
     }
 }
 
-export const getSeller = async(req: any, res:Response, next:NextFunction) => {
+export const getSeller = async (req: any, res: Response, next: NextFunction) => {
     try {
         const seller = req.seller;
         res.status(201).json({

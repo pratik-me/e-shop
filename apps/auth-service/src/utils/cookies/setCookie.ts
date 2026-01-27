@@ -1,10 +1,18 @@
-import { Response } from "express"
+import { Response, CookieOptions } from "express";
 
-export const setCookie = (res: Response, name: string, value: string) => {
-    res.cookie(name, value, {
+export const setCookie = (
+    res: Response, 
+    name: string, 
+    value: string, 
+    durationInMs: number = 7 * 24 * 60 * 60 * 1000
+) => {
+    const options: CookieOptions = {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,      // 7 days
-    })
-}
+        maxAge: durationInMs,
+        path: "/",
+    };
+
+    res.cookie(name, value, options);
+};

@@ -17,12 +17,12 @@ const isAuthenticated = async(req: any, res:Response, next:NextFunction) => {
         })
 
         let account;
-        if(req.role === "user") {
+        if(decoded.role === "user") {
             account = await prisma.users.findUnique({
                 where: {id: decoded.id}
             });
             req.user = account;
-        } else if (req.role === "seller") {
+        } else if (decoded.role === "seller") {
             account = await prisma.sellers.findUnique({
                 where: {id: decoded.id},
                 include: {shop: true},
@@ -41,6 +41,7 @@ const isAuthenticated = async(req: any, res:Response, next:NextFunction) => {
     } catch (error) {
         return res.status(500).json({
             message: "Internal server error.",
+            error: error,
             success: false,
         })
     }
