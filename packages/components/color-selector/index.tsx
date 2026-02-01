@@ -1,4 +1,4 @@
-import { Divide } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
 
@@ -11,7 +11,7 @@ const defaultColors = [
   "#00ffff", // Cyan
 ];
 
-const ColorSelector = ({ control, errors }: any) => {
+export const ColorSelector = ({ control, errors }: any) => {
   const [customColors, setCustomColors] = useState<string[]>([]);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [newColor, setNewColor] = useState("#ffffff");
@@ -37,9 +37,44 @@ const ColorSelector = ({ control, errors }: any) => {
                         : [...(field.value || []), color]
                     )
                   }
+                  className={`w-7 h-7 p-2 rounded-md my-1 flex items-center justify-center border-2 transition-opacity ${
+                    isSelected ? "scale-110 border-white" : "border-transparent"
+                  } ${isLightColor ? "border-gray-600" : ""}`}
+                  style={{ backgroundColor: color }}
                 ></button>
               );
             })}
+
+            {/* Add new color */}
+            <button
+              type="button"
+              onClick={() => setShowColorPicker(!showColorPicker)}
+              className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500 bg-gray-800 hover:bg-gray-700 transition"
+            >
+              <Plus size={16} color="white" />
+            </button>
+
+            {/* Color Picker */}
+            {showColorPicker && (
+              <div className="relative flex items-center gap-2">
+                <input
+                  type="color"
+                  value={newColor}
+                  onChange={(e) => setNewColor(e.target.value)}
+                  className="w-10 h-10 p-0 border-none cursor-pointer"
+                />
+                <button
+                  type="button"
+                  className="px-3 py-1 bg-gray-700 text-white rounded-md text-sm"
+                  onClick={() => {
+                    setCustomColors([...customColors, newColor]);
+                    setShowColorPicker(false);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            )}
           </div>
         )}
       />

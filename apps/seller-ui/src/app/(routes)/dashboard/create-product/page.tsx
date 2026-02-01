@@ -1,6 +1,8 @@
 "use client";
 import ImagePlaceHolder from "apps/seller-ui/src/shared/components/image-placeholder";
 import { ChevronRight } from "lucide-react";
+import { ColorSelector } from "packages/components/color-selector";
+import CustomSpecifications from "packages/components/custom-specifications";
 import Input from "packages/components/input";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -106,7 +108,7 @@ const Page = () => {
                 {...register("title", { required: "Title is required" })}
               />
               {errors.title && (
-                <p className="text-red-500 text-start mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.title?.message as string}
                 </p>
               )}
@@ -206,7 +208,11 @@ const Page = () => {
               </div>
 
               <div className="mt-2">
-                {/* <ColorSelector /> */}
+                <ColorSelector control={control} errors={errors} />
+              </div>
+
+              <div className="mt-2">
+                <CustomSpecifications control={control} errors={errors} />
               </div>
             </div>
           </div>
