@@ -42,22 +42,28 @@ const CustomSpecifications = ({ control, errors }: any) => {
                 />
               )}
             />
-            <button type="button" className="text-red-500 hover:text-red-700" onClick={() => remove(index)}>
-                <Trash2Icon size={20}/>
+            <button
+              type="button"
+              className="text-red-500 hover:text-red-700"
+              onClick={() => remove(index)}
+            >
+              <Trash2Icon size={20} />
             </button>
           </div>
         ))}
-        <button className="flex items-center text-blue-500 hover:text-blue-600" onClick={() => append({name: "", value: ""})}>
-            <PlusCircle size={20}/> Add Specification
+
+        <button
+          className="flex items-center gap-2 text-blue-500 hover:text-blue-600"
+          onClick={() => append({ name: "", value: "" })}
+        >
+          <PlusCircle size={20} /> Add Specification
         </button>
       </div>
-      {
-        errors?.custom_specifications && (
-            <p className="text-red-500 text-xs mt-1">
-                {errors.custom_specifications.message as string}
-            </p>
-        )
-      }
+      {errors?.custom_specifications && (
+        <p className="text-red-500 text-xs mt-1">
+          {errors.custom_specifications.message as string}
+        </p>
+      )}
     </div>
   );
 };
