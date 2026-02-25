@@ -1,5 +1,7 @@
 "use client";
+import { useQuery } from "@tanstack/react-query";
 import ImagePlaceHolder from "apps/seller-ui/src/shared/components/image-placeholder";
+import axiosInstance from "apps/seller-ui/src/utils/axiosInstance";
 import { ChevronRight } from "lucide-react";
 import { ColorSelector } from "packages/components/color-selector";
 import CustomProperties from "packages/components/custom-properties";
@@ -20,7 +22,7 @@ const Page = () => {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [images, setImages] = useState<(File | null)[]>([null]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(false);
 
   const handleImageChange = (file: File | null, index: number) => {
     const updatedImages = [...images];
@@ -50,6 +52,26 @@ const Page = () => {
 
     setValue("images", images);
   };
+
+  const {data, isLoading, isError} = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      try {
+        const res = await axiosInstance.get("product/api/get-categories");
+        return res.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    retry: 2
+  });
+
+  const categories = data?.categories || [];
+  const subCategories = data?.subCategories || {};
+
+  const selectedCategory = watch("category");
+  const regularPrice = watch("regular_price");
 
   const onSubmit = (data: any) => {
     console.log(data);

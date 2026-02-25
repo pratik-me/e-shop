@@ -1,5 +1,5 @@
-import Redis from "ioredis";
+import Redis from "ioredis"
 
-const redis = new Redis("rediss://default:AaUdAAIncDExZmYyMzg3MWNhM2E0YTg0YmNiOTBjMTQ0M2M1NGIyZnAxNDIyNjk@artistic-dory-42269.upstash.io:6379");
+const redis = new Redis("rediss://default:Abb1AAIncDIxZTkwY2JiMzQ2ZTQ0MDViYjU3YzZhY2IzMjQyYWU3OHAyNDY4Mzc@enabled-asp-46837.upstash.io:6379");
 
 export default redis;
