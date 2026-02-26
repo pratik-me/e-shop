@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@prisma/client": "6.19",
     "@tanstack/react-query": "^5.90.12",
     "axios": "^1.13.2",

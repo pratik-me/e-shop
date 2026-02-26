@@ -23,9 +23,12 @@ export const createDiscountCodes = async (req: any, res: Response, next: NextFun
         const isDiscountCodeExist = await prisma.discount_codes.findUnique({
             where: { discountCode }
         })
+        console.log("No discount code exist")
 
         if (isDiscountCodeExist)
             return next(new ValidationError("Discount code already available. Please use a different code."))
+
+        console.log("Creating discount code")   
 
         const discount_code = await prisma.discount_codes.create({
             data: {
