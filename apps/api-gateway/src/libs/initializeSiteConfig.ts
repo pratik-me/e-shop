@@ -16,6 +16,7 @@ const initializeSiteConfig = async () => {
                 subCategories: {
                     "Electronics": ["Mobiles", "Laptops", "Computers", "Accessories"],
                     "Fashion": ["Men", "Women", "Kids", "Footwear"],
+                    "Home and Kitchen": ["Utensils", "Doors", "Rackets"],
                     "Sports and Fitness": ["Gym Equipment", "Outdoor Sports", "Wearables"],
                 }
             }
