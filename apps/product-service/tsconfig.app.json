@@ -2,16 +2,25 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "jsx": "react-jsx",
     "types": [
       "node",
       "express"
     ],
     "rootDir": "../../",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
   },
   "include": [
     "src/**/*.ts",
     "../../packages/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
   ],
   "exclude": []
 }

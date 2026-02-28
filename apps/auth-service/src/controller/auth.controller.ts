@@ -79,7 +79,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         res.clearCookie("seller-refresh-token");
 
         // Tokenization
-        const accessToken = jwt.sign({ id: user.id, role: "user" }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
+        const accessToken = jwt.sign({ id: user.id, role: "user" }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "45m" });
         const refreshToken = jwt.sign({ id: user.id, role: "user" }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
 
         setCookie(res, "refresh-token", refreshToken);
@@ -114,7 +114,7 @@ export const refreshToken = async (req: any, res: Response, next: NextFunction) 
 
         if (!account) return new AuthError("Forbidden! Account not found.");
 
-        const newAccessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" });
+        const newAccessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "45m" });
 
         if (decoded.role === "user") setCookie(res, "access_token", newAccessToken);
         else if (decoded.role === "seller") setCookie(res, "seller-access-token", newAccessToken);
@@ -331,7 +331,7 @@ export const loginSeller = async (req: Request, res: Response, next: NextFunctio
         );
 
         setCookie(res, "seller-refresh-token", refreshToken, 7 * 24 * 60 * 60 * 1000);
-        setCookie(res, "seller-access-token", accessToken, 20 * 60 * 1000);
+        setCookie(res, "seller-access-token", accessToken, 45 * 60 * 1000);
 
         res.status(200).json({
             message: "Login successful",

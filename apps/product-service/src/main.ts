@@ -3,6 +3,7 @@ import cors from "cors"
 import { errorMiddleware } from '@packages/error-handler/error-middleware';
 import cookieParser from 'cookie-parser';
 import router from './routes/product.router';
+import imagekit from '@packages/libs/imagekit';
 
 const port = Number(process.env.PORT) || 6002 ;
 
@@ -21,11 +22,6 @@ app.get('/', (req, res) => {
     res.send({ 'message': 'Hello Product API'});
 });
 
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-// app.get("/docs-json", (req, res) => {
-//     res.json(swaggerDocument);
-// })
-
 // Routes
 app.use("/api", router)
 
@@ -33,7 +29,6 @@ app.use(errorMiddleware);
 
 const server = app.listen(port, () => {
     console.log(`Product service is running at http://localhost:${port}/api`);
-    // console.log(`Swagger Docs available at http://localhost:${port}/api-docs`);
 });
 
 server.on('error', (err) => {
