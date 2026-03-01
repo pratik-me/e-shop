@@ -2,6 +2,11 @@ import { Pencil, WandSparkles, X } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 
+type UploadedImage = {
+  file_url: string;
+  fileId: string;
+};
+
 type Params = {
   size: string;
   small?: boolean;
@@ -10,6 +15,9 @@ type Params = {
   defaultImage?: string | null;
   setOpenImageModal: (openImageModal: boolean) => void;
   index?: any;
+  setSelectedImage: (file: string) => void;
+  images: (UploadedImage | null)[];
+  pictureUploadingLoader: boolean;
 };
 
 const ImagePlaceHolder = ({
@@ -19,7 +27,10 @@ const ImagePlaceHolder = ({
   onRemove,
   defaultImage = null,
   index = null,
+  setSelectedImage,
   setOpenImageModal,
+  pictureUploadingLoader,
+  images,
 }: Params) => {
   const [imagePreview, setImagePreview] = useState<string | null>(defaultImage);
 
@@ -48,6 +59,7 @@ const ImagePlaceHolder = ({
         <>
           <button
             type="button"
+            disabled={pictureUploadingLoader}
             onClick={() => onRemove?.(index!)}
             className="absolute top-3 right-3 p-2 !rounded bg-red-600 shadow-lg"
           >
@@ -55,7 +67,13 @@ const ImagePlaceHolder = ({
           </button>
           <button
             className="absolute top-3 right-[70px] p-2 !rounded bg-blue-500 shadow-lg cursor-pointer"
-            onClick={() => setOpenImageModal(true)}
+            disabled={pictureUploadingLoader}
+            onClick={() => {
+              setOpenImageModal(true)
+              if(typeof(images[index]?.file_url) !== "undefined")
+                setSelectedImage(images[index]?.file_url)
+              else setSelectedImage("")
+            }}
           >
             <WandSparkles size={16} />
           </button>
