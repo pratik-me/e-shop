@@ -33,10 +33,10 @@ const Page = () => {
   const [isChanged, setIsChanged] = useState(true);
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<(UploadedImage | null)[]>([null]);
-  const [activeEffect, setActiveEffect] = useState<string | null>(null)
+  const [activeEffect, setActiveEffect] = useState<string | null>(null);
   const [pictureUploadingLoader, setPictureUploadingLoader] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
-  const [processing, setProcessing] = useState(false)
+  const [processing, setProcessing] = useState(false);
 
   const convertFileBase64 = (file: File) => {
     return new Promise((resolve, reject) => {
@@ -102,19 +102,18 @@ const Page = () => {
     }
   };
 
-  const applyTransformation = async(transformation: string) => {
-    if(!selectedImage || processing) return;
-    setProcessing(true)
-
+  const applyTransformation = async (transformation: string) => {
+    if (!selectedImage || processing) return;
+    setProcessing(true);
     try {
       const transformedUrl = `${selectedImage}?tr=${transformation}`;
-      setSelectedImage(transformedUrl)
+      setSelectedImage(transformedUrl);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setProcessing(false)
+      setProcessing(false);
     }
-  } 
+  };
 
   const handleSaveDraft = () => {};
 
@@ -403,6 +402,7 @@ const Page = () => {
                 </p>
               )}
 
+              {/* Subcategory */}
               <div className="mt-2">
                 <label className="block font-semibold text-gray-300 mb-1">
                   Subcategory *
@@ -437,9 +437,9 @@ const Page = () => {
                     )}
                   />
                 )}
-                {errors.category && (
+                {errors.subcategory && (
                   <p className="text-red-500 text-start mt-1">
-                    {errors.category.message as string}
+                    {errors.subcategory.message as string}
                   </p>
                 )}
               </div>
@@ -618,6 +618,7 @@ const Page = () => {
                 alt="product-image"
                 fill
                 className="object-contain"
+                unoptimized
               />
             </div>
             {selectedImage && (
@@ -626,14 +627,17 @@ const Page = () => {
                   AI Enhancements
                 </h3>
                 <div className="grid grid-cols-2 gap-3 max-h-[250px] overflow-y-auto">
-                  {
-                    enhacements?.map(({label, effect}) => (
-                      <button key={effect} className={`p-2 rounded-md flex items-center gap-2 ${activeEffect === effect ? "bg-blue-600 text-white" : "bg-gray-700 hover:bg-gray-600"}`}>
-                        <Wand size={18} />
-                        {label}
-                      </button>
-                    ))
-                  }
+                  {enhacements?.map(({ label, effect }) => (
+                    <button
+                      key={effect}
+                      className={`p-2 rounded-md flex items-center gap-2 ${activeEffect === effect ? "bg-blue-600 text-white" : "bg-gray-700 hover:bg-gray-600"}`}
+                      onClick={() => applyTransformation(effect)}
+                      disabled={processing}
+                    >
+                      <Wand size={18} />
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
