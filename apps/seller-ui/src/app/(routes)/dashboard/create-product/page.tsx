@@ -297,14 +297,17 @@ const Page = () => {
                 <ColorSelector control={control} errors={errors} />
               </div>
 
+              {/* Custom Specification */}
               <div className="mt-2">
                 <CustomSpecifications control={control} errors={errors} />
               </div>
 
+              {/* Custom Properties */}
               <div className="mt-2">
                 <CustomProperties control={control} errors={errors} />
               </div>
 
+              {/* Cash on Delivery */}
               <div className="mt-2">
                 <label className="block font-semibold text-gray-300 mb-1">
                   Cash On Delivery *
@@ -331,6 +334,7 @@ const Page = () => {
               </div>
             </div>
 
+            {/* Category */}
             <div className="w-2/4">
               <label className="block font-semibold text-gray-300 mb-1">
                 Category *
@@ -568,6 +572,7 @@ const Page = () => {
         </div>
       </div>
 
+      {/* Image Modal Section */}
       {
         openImageModal && (
           <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-60 z-50">
