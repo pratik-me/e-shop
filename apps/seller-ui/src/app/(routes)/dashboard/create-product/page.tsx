@@ -36,6 +36,7 @@ const Page = () => {
   const [activeEffect, setActiveEffect] = useState<string | null>(null)
   const [pictureUploadingLoader, setPictureUploadingLoader] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
+  const [processing, setProcessing] = useState(false)
 
   const convertFileBase64 = (file: File) => {
     return new Promise((resolve, reject) => {
@@ -100,6 +101,20 @@ const Page = () => {
       console.log(error);
     }
   };
+
+  const applyTransformation = async(transformation: string) => {
+    if(!selectedImage || processing) return;
+    setProcessing(true)
+
+    try {
+      const transformedUrl = `${selectedImage}?tr=${transformation}`;
+      setSelectedImage(transformedUrl)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setProcessing(false)
+    }
+  } 
 
   const handleSaveDraft = () => {};
 
@@ -613,7 +628,7 @@ const Page = () => {
                 <div className="grid grid-cols-2 gap-3 max-h-[250px] overflow-y-auto">
                   {
                     enhacements?.map(({label, effect}) => (
-                      <button className={`p-2 rounded-md flex items-center gap-2 ${activeEffect === effect ? "bg-blue-600 text-white" : "bg-gray-700 hover:bg-gray-600"}`}>
+                      <button key={effect} className={`p-2 rounded-md flex items-center gap-2 ${activeEffect === effect ? "bg-blue-600 text-white" : "bg-gray-700 hover:bg-gray-600"}`}>
                         <Wand size={18} />
                         {label}
                       </button>
