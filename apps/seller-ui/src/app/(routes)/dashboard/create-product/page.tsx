@@ -5,6 +5,7 @@ import { enhacements } from "apps/seller-ui/src/utils/aiEnhancements";
 import axiosInstance from "apps/seller-ui/src/utils/axiosInstance";
 import { ChevronRight, Wand, X } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ColorSelector } from "packages/components/color-selector";
 import CustomProperties from "packages/components/custom-properties";
 import CustomSpecifications from "packages/components/custom-specifications";
@@ -13,6 +14,7 @@ import RichTextEditor from "packages/components/rich-text-editor";
 import SizeSelector from "packages/components/size-selector";
 import React, { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 type UploadedImage = {
   file_url: string;
@@ -20,6 +22,7 @@ type UploadedImage = {
 };
 
 const Page = () => {
+  const router = useRouter();
   const {
     register,
     control,
@@ -148,8 +151,17 @@ const Page = () => {
     return selectedCategory ? subCategoriesData[selectedCategory] || [] : [];
   }, [selectedCategory, subCategoriesData]);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      console.log(data)
+      setIsPageLoading(true);
+      await axiosInstance.post("/product/api/create-product", data);
+      router.push("/dashboard/all-products");
+    } catch (error: any) {
+      toast.error(error?.data?.message);
+    } finally {
+      setIsPageLoading(false);
+    }
   };
 
   return (
@@ -226,7 +238,7 @@ const Page = () => {
                   cols={10}
                   label="Short Description * (Max 150 words)"
                   placeholder="Enter product description for quick view"
-                  {...register("description", {
+                  {...register("short_description", {
                     required: "Description is required",
                     validate: (value) => {
                       const wordCount = value.trim().split(/\s+/).length;
@@ -413,7 +425,7 @@ const Page = () => {
                   <p className="text-red-500">Failed to load Subcategories</p>
                 ) : (
                   <Controller
-                    name="subcategory"
+                    name="subCategory"
                     control={control}
                     rules={{ required: "Subcategory is required" }}
                     render={({ field }) => (
@@ -424,22 +436,22 @@ const Page = () => {
                         <option value="" className="bg-black">
                           Select Subcategory
                         </option>
-                        {subCategories?.map((subcategory: string) => (
+                        {subCategories?.map((subCategory: string) => (
                           <option
-                            value={subcategory}
-                            key={subcategory}
+                            value={subCategory}
+                            key={subCategory}
                             className="bg-black"
                           >
-                            {subcategory}
+                            {subCategory}
                           </option>
                         ))}
                       </select>
                     )}
                   />
                 )}
-                {errors.subcategory && (
+                {errors.subCategory && (
                   <p className="text-red-500 text-start mt-1">
-                    {errors.subcategory.message as string}
+                    {errors.subCategory.message as string}
                   </p>
                 )}
               </div>
@@ -454,9 +466,8 @@ const Page = () => {
                   rules={{
                     required: "Detailed Description is required",
                     validate: (value) => {
-                      const wordCount = value
-                        ?.split(/\s+/)
-                        .filter((word: string) => word).length;
+                      const wordCount =
+                        value?.trim().match(/[\p{L}\p{N}'-]+/gu)?.length || 0;
 
                       return (
                         wordCount >= 100 ||
@@ -499,6 +510,26 @@ const Page = () => {
 
               <div className="mt-2">
                 <Input
+                  label="Regular Price *"
+                  placeholder="$25"
+                  {...register("regular_price", {
+                    required: "Regular Price is required",
+                    valueAsNumber: true,
+                    min: {
+                      value: 1,
+                      message: "Regular Price should be at least 1",
+                    },
+                  })}
+                />
+                {errors.regular_price && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.regular_price.message as string}
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-2">
+                <Input
                   label="Sale Price *"
                   placeholder="$15"
                   {...register("sale_price", {
@@ -516,9 +547,9 @@ const Page = () => {
                     },
                   })}
                 />
-                {errors.video_url && (
+                {errors.sale_price && (
                   <p className="text-red-500 text-xs mt-1">
-                    {errors.video_url.message as string}
+                    {errors.sale_price.message as string}
                   </p>
                 )}
               </div>
@@ -537,12 +568,6 @@ const Page = () => {
                     max: {
                       value: 1000,
                       message: "Stock cannot exceed 1000",
-                    },
-                    validate: (value) => {
-                      if (isNaN(value)) return "Only numbers are allowed";
-                      if (regularPrice && value >= regularPrice)
-                        return "Stock must be a whole number!";
-                      return true;
                     },
                   })}
                 />
@@ -660,9 +685,9 @@ const Page = () => {
         <button
           type="submit"
           className="px-4 py-2 bg-blue-600 text-white rounded-md"
-          disabled={isLoading}
+          disabled={isPageLoading}
         >
-          {isLoading ? "Creating..." : "Create"}
+          {isPageLoading ? "Creating..." : "Create"}
         </button>
       </div>
     </form>
