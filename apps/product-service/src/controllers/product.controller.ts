@@ -134,8 +134,6 @@ export const uploadProductImage = async (
       fileName: `product-${Date.now()}.jpg`,
     });
 
-    console.log(uploadImage);
-
     return res.json({
       file_url: uploadImage.url,
       fileId: uploadImage.fileId,
@@ -215,8 +213,6 @@ export const createProduct = async (
       return next(new ValidationError("Missing required fields"));
     if (!req.seller.id)
       return next(new AuthError("Only registered seller can create products"));
-
-    console.log(images);
 
     const newProduct = await prisma.products.create({
       data: {

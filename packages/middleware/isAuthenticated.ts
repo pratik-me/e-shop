@@ -14,8 +14,6 @@ const isAuthenticated = async (req: any, res: Response, next: NextFunction) => {
         success: false,
       });
 
-    console.log(token);
-
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
       id: string;
       role: "user" | "seller";
