@@ -216,6 +216,8 @@ export const createProduct = async (
     if (!req.seller.id)
       return next(new AuthError("Only registered seller can create products"));
 
+    console.log(images);
+
     const newProduct = await prisma.products.create({
       data: {
         title,
@@ -228,7 +230,7 @@ export const createProduct = async (
           create: images
             .filter((image: any) => image && image.fileId && image.file_url)
             .map((image: any) => ({
-              file_id: image.fileId,
+              fileId: image.fileId,
               url: image.file_url,
             })),
         },
