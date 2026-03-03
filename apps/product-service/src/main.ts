@@ -3,6 +3,7 @@ import cors from "cors"
 import { errorMiddleware } from '@packages/error-handler/error-middleware';
 import cookieParser from 'cookie-parser';
 import router from './routes/product.router';
+import "./jobs/product-cron.job";
 
 const port = Number(process.env.PORT) || 6002 ;
 

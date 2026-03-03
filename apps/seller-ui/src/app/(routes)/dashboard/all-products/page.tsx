@@ -22,7 +22,6 @@ import {
   Trash,
 } from "lucide-react";
 import DeleteConfirmationModal from "apps/seller-ui/src/shared/components/modals/delete.confirmation.modal";
-import RestoreIcon from "apps/seller-ui/src/assets/svgs/restoreIcon";
 
 const fetchProducts = async () => {
   const res = await axiosInstance.get("/product/api/get-shop-products");
