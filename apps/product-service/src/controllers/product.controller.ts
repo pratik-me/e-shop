@@ -254,8 +254,32 @@ export const createProduct = async (
       message: "Successfully created product",
       success: true,
       newProduct,
-    })
+    });
   } catch (error) {
     next(error);
+  }
+};
+
+export const getShopProducts = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const products = await prisma.products.findMany({
+      where: {
+        shopId: req?.seller?.shop?.id,
+      },
+      include: {
+        images: true,
+      },
+    })
+
+    res.status(201).json({
+      success: true,
+      products,
+    })
+  } catch (error) {
+    
   }
 };
