@@ -304,26 +304,73 @@ export const deleteProduct = async (
       },
     });
 
-    if(!product) 
-      return next(new ValidationError("Product not found"))
-    if(product.shopId !== sellerId)
-      return next(new ValidationError("Unauthorized action"))
-    if(product.isDeleted)
-      return next(new ValidationError("Product is already deleted"))
+    if (!product) return next(new ValidationError("Product not found"));
+    if (product.shopId !== sellerId)
+      return next(new AuthError("Unauthorized action"));
+    if (product.isDeleted)
+      return next(new ValidationError("Product is already deleted"));
 
     const deleteProduct = await prisma.products.update({
-      where: {id: productId},
+      where: { id: productId },
       data: {
         isDeleted: true,
-        deletedAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
-      }
-    })
+        deletedAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
+    });
 
     return res.status(200).json({
-      message: "Product is scheduled for deletion in 24 hours. You can restore it within this time",
+      message:
+        "Product is scheduled for deletion in 24 hours. You can restore it within this time",
       deleteAt: deleteProduct.deletedAt,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const restoreProduct = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { productId } = req.params;
+    const sellerId = req.seller?.shop?.id;
+
+    const product = await prisma.products.findUnique({
+      where: { id: productId },
+      select: {
+        id: true,
+        shopId: true,
+        isDeleted: true,
+      },
+    });
+
+    if (!product) return next(new ValidationError("Product not found"));
+    if (product.shopId !== sellerId)
+      return next(new AuthError("Unauthorized action"));
+    if (!product.isDeleted) {
+      res.status(400).json({
+        message: "Product is not in deleted state",
+      });
+    }
+
+    await prisma.products.update({
+      where: {
+        id: productId,
+      },
+      data: {
+        isDeleted: false, deletedAt: null,
+      },
+    })
+
+    res.status(200).json({
+      message: "Product successfully restored!"
     })
   } catch (error) {
-    next(error)
+    return res.status(500).json({
+        message: "Error while restoring the product",
+        error
+    })
   }
 };
