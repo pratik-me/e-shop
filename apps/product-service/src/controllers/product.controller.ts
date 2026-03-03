@@ -275,13 +275,55 @@ export const getShopProducts = async (
       include: {
         images: true,
       },
-    })
+    });
 
     res.status(201).json({
       success: true,
       products,
+    });
+  } catch (error) {}
+};
+
+export const deleteProduct = async (
+  req: any,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { productId } = req.params;
+    const sellerId = req.seller?.shop?.id;
+
+    const product = await prisma.products.findUnique({
+      where: {
+        id: productId,
+      },
+      select: {
+        id: true,
+        shopId: true,
+        isDeleted: true,
+      },
+    });
+
+    if(!product) 
+      return next(new ValidationError("Product not found"))
+    if(product.shopId !== sellerId)
+      return next(new ValidationError("Unauthorized action"))
+    if(product.isDeleted)
+      return next(new ValidationError("Product is already deleted"))
+
+    const deleteProduct = await prisma.products.update({
+      where: {id: productId},
+      data: {
+        isDeleted: true,
+        deletedAt: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      }
+    })
+
+    return res.status(200).json({
+      message: "Product is scheduled for deletion in 24 hours. You can restore it within this time",
+      deleteAt: deleteProduct.deletedAt,
     })
   } catch (error) {
-    
+    next(error)
   }
 };
