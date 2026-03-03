@@ -26,7 +26,7 @@ const DeleteConfirmationModal = ({product, onClose, onConfirm, onRestore}: any) 
             <div className='flex justify-end gap-3 mt-6'>
                 <button onClick={onClose} className='bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-md text-white transition'>Cancel</button>
                 <button onClick={!product?.isDeleted ? onConfirm : onRestore} className={`${product?.isDeleted ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"} px-4 py-2 rounded-md text-white font-semibold transition`}>
-                    {product?.isDeleted ? "Restore" : "Deleted"}
+                    {product?.isDeleted ? "Restore" : "Delete"}
                 </button>
             </div>
         </div>

@@ -7,7 +7,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import axiosInstance from "apps/seller-ui/src/utils/axiosInstance";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,11 +16,13 @@ import {
   Eye,
   Pencil,
   Plus,
+  RotateCcw,
   Search,
   Star,
   Trash,
 } from "lucide-react";
 import DeleteConfirmationModal from "apps/seller-ui/src/shared/components/modals/delete.confirmation.modal";
+import RestoreIcon from "apps/seller-ui/src/assets/svgs/restoreIcon";
 
 const fetchProducts = async () => {
   const res = await axiosInstance.get("/product/api/get-shop-products");
@@ -44,7 +46,27 @@ const ProductList = () => {
   const openDeleteModal = (product: any) => {
     setSelectedProduct(product);
     setShowDeleteModal(true);
-  }
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await axiosInstance.delete(`/product/api/delete-product/${productId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shop-products"] });
+      setShowDeleteModal(false);
+    },
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async (productId: string) => {
+      await axiosInstance.put(`/product/api/restore-product/${productId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shop-products"] });
+      setShowDeleteModal(false);
+    },
+  });
 
   const columns = useMemo(
     () => [
@@ -116,28 +138,37 @@ const ProductList = () => {
           <div className="flex gap-3">
             <Link
               href={`/product/${row.original.id}`}
-              className="text-blue-400 hover:text-blue-300 transition"
+              className="text-blue-400 hover:text-blue-600 transition"
             >
               <Eye size={18} />
             </Link>
             <Link
               href={`/product/edit/${row.original.id}`}
-              className="text-yellow-400 hover:text-yellow-300 transition"
+              className="text-yellow-400 hover:text-yellow-600 transition"
             >
               <Pencil size={18} />
             </Link>
             <button
-              className="text-green-400 hover:text-green-300 transition"
+              className="text-orange-400 hover:text-orange-600 transition"
               // onClick={() => openAnalytics(row.original)}
             >
               <BarChart size={18} />
             </button>
-            <button
-              className="text-red-400 hover:text-red-300 transition"
-              onClick={() => openDeleteModal(row.original)}
-            >
-              <Trash size={18} />
-            </button>
+            {row.original.isDeleted ? (
+              <button
+                className="text-green-400 hover:text-green-600 transition"
+                onClick={() => openDeleteModal(row.original)}
+              >
+                <RotateCcw size={18} />
+              </button>
+            ) : (
+              <button
+                className="text-red-400 hover:text-red-600 transition"
+                onClick={() => openDeleteModal(row.original)}
+              >
+                <Trash size={18} />
+              </button>
+            )}
           </div>
         ),
       },
@@ -235,8 +266,8 @@ const ProductList = () => {
           <DeleteConfirmationModal
             product={selectedProduct}
             onClose={() => setShowDeleteModal(false)}
-            // onConfirm={() => deleteMutation.mutate(selectedProduct?.id)}
-            // onRestore={() => restoreMutation.mutate(selectedProduct?.id)}
+            onConfirm={() => deleteMutation.mutate(selectedProduct?.id)}
+            onRestore={() => restoreMutation.mutate(selectedProduct?.id)}
           />
         )}
       </div>
