@@ -278,7 +278,7 @@ export const getShopProducts = async (
       success: true,
       products,
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const deleteProduct = async (
@@ -384,21 +384,23 @@ export const getAllProducts = async (
     const skip = (page - 1) * limit;
     const type = req.query.type;
 
-    const baseFilter = {
+    const baseFilter: Prisma.productsWhereInput = {
       OR: [
         {
-          starting_date: null,
+          // starting_date: null
+          starting_date: { isSet: false },
         },
         {
-          ending_date: null,
-        },
-      ],
+          // ending_date: null
+          ending_date: { isSet: false },
+        }
+      ]
     };
 
     const orderBy: Prisma.productsOrderByWithRelationInput =
       type === "latest"
-        ? { createdAt: "desc" as Prisma.SortOrder }
-        : { totalSales: "desc" as Prisma.SortOrder };
+        ? { createdAt: "desc" }
+        : { totalSales: "desc" };
     const [products, total, top10Products] = await Promise.all([
       prisma.products.findMany({
         skip, take: limit, include: {

@@ -9,9 +9,9 @@ const Ratings: FC<Props> = ({rating}) => {
     const stars = [];
     for(let i = 0; i <= 5; i++) {
         if(i <= rating) {
-            stars.push(<Star color="#ffc107" fill="#ffc107" />)
+            stars.push(<Star id={`${i}`} color="#ffc107" fill="#ffc107" />)
         } else {
-          stars.push(<Star color="#ccc" fill='none'/>)
+          stars.push(<Star id={`${i}`} color="#ccc" fill='none'/>)
         }
     }
   return (

@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import useUser from "apps/user-ui/src/hooks/useUser";
+import { SignInSection } from "../../components/sign-in-header";
 
 const HeaderBottom = () => {
   const [show, setShow] = useState(false);
@@ -79,35 +80,37 @@ const HeaderBottom = () => {
             <div className="flex items-center gap-8 pb-2">
               <div className="flex items-center gap-2">
                 {!isLoading && user ? (
-                  <>
-                    <Link
-                      href={"/profile"}
-                      className="border-2 w-[50px] h-[50px] flex items-center justify-center rounded-full border-[#010f1c1a]"
-                    >
-                      <UserRound size={26} />
-                    </Link>
-                    <Link href={"/login"}>
-                      <span className="block font-medium">Hello, </span>
-                      <span className="font-semibold">
-                        {user?.name.split(" ")[0]}
-                      </span>
-                    </Link>
-                  </>
+                  // <>
+                  //   <Link
+                  //     href={"/profile"}
+                  //     className="border-2 w-[50px] h-[50px] flex items-center justify-center rounded-full border-[#010f1c1a]"
+                  //   >
+                  //     <UserRound size={26} />
+                  //   </Link>
+                  //   <Link href={"/login"}>
+                  //     <span className="block font-medium">Hello, </span>
+                  //     <span className="font-semibold">
+                  //       {user?.name.split(" ")[0]}
+                  //     </span>
+                  //   </Link>
+                  // </>
+                  <SignInSection isLoading={isLoading} Username={user?.name.split(" ")[0]} />
                 ) : (
-                  <>
-                    <Link
-                      href={"/login"}
-                      className="border-2 w-[50px] h-[50px] flex items-center justify-center rounded-full border-[#010f1c1a]"
-                    >
-                      <UserRound size={26} />
-                    </Link>
-                    <Link href={"/login"}>
-                      <span className="block font-medium">Hello, </span>
-                      <span className="font-semibold">
-                        {isLoading ? "..." : "Sign In"}
-                      </span>
-                    </Link>
-                  </>
+                  // <>
+                  //   <Link
+                  //     href={"/login"}
+                  //     className="border-2 w-[50px] h-[50px] flex items-center justify-center rounded-full border-[#010f1c1a]"
+                  //   >
+                  //     <UserRound size={26} />
+                  //   </Link>
+                  //   <Link href={"/login"}>
+                  //     <span className="block font-medium">Hello, </span>
+                  //     <span className="font-semibold">
+                  //       {isLoading ? "..." : "Sign In"}
+                  //     </span>
+                  //   </Link>
+                  // </>
+                  <SignInSection isLoading={isLoading} Username="Sign In" />
                 )}
               </div>
               <div className="flex items-center gap-5">

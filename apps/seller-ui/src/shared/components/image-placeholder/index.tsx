@@ -69,10 +69,10 @@ const ImagePlaceHolder = ({
             className="absolute top-3 right-[70px] p-2 !rounded bg-blue-500 shadow-lg cursor-pointer"
             disabled={pictureUploadingLoader}
             onClick={() => {
-              setOpenImageModal(true)
-              if(typeof(images[index]?.file_url) !== "undefined")
-                setSelectedImage(images[index]?.file_url)
-              else setSelectedImage("")
+              setOpenImageModal(true);
+              if (typeof images[index]?.file_url !== "undefined")
+                setSelectedImage(images[index]?.file_url);
+              else setSelectedImage("");
             }}
           >
             <WandSparkles size={16} />
@@ -89,10 +89,10 @@ const ImagePlaceHolder = ({
 
       {imagePreview ? (
         <Image
-          width={400}
-          height={300}
           src={imagePreview}
           alt="uploaded"
+          width={400}
+          height={300}
           className="w-full h-full object-cover rounded-lg"
         />
       ) : (

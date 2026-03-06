@@ -74,8 +74,8 @@ const ProductList = () => {
         header: "Image",
         cell: ({ row }: any) => (
           <Image
-            alt={row.original.images[0]?.url}
             src={row.original.images[0]?.url}
+            alt={row.original.images[0]?.url}
             width={200}
             height={200}
             className="w-12 h-12 rounded-md object-cover"
@@ -172,7 +172,7 @@ const ProductList = () => {
         ),
       },
     ],
-    [],
+    []
   );
 
   const table = useReactTable({
@@ -234,7 +234,7 @@ const ProductList = () => {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </th>
                   ))}
@@ -251,7 +251,7 @@ const ProductList = () => {
                     <td key={cell.id} className="p-3">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </td>
                   ))}

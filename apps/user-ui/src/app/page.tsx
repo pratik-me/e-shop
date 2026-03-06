@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use } from "react";
+import React from "react";
 import Hero from "../shared/modules/hero";
 import SectionTitle from "../shared/components/section-title";
 import { useQuery } from "@tanstack/react-query";

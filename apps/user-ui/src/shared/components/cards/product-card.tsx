@@ -3,6 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Ratings from "../ratings";
 import { Eye, Heart, ShoppingBag } from "lucide-react";
+import ProductDetailsCard from "./product-details.card";
 
 const ProductCard = ({
   isEvent,
@@ -11,6 +12,7 @@ const ProductCard = ({
   isEvent?: boolean;
   product: any;
 }) => {
+  const [open, setOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
   useEffect(() => {
@@ -89,7 +91,7 @@ const ProductCard = ({
             ${product?.regular_price}
           </span>
         </div>
-        <span className="text-sm font-medium text- green-500">
+        <span className="text-sm font-medium text-green-500">
           {product.totalSales} sold
         </span>
       </div>
@@ -111,12 +113,20 @@ const ProductCard = ({
           />
         </div>
         <div className="bg-white rounded-full p-[6px] shadow-md">
-          <Eye className="cursor-pointer text-[#4b5563] hover:scale-110 transition" size={22} fill="red" stroke="red"/>
+          <Eye
+            className="cursor-pointer text-[#4b5563] hover:scale-110 transition"
+            size={22}
+            onClick={() => setOpen(true)}
+          />
         </div>
         <div className="bg-white rounded-full p-[6px] shadow-md">
-          <ShoppingBag size={22} className="cursor-pointer text-[#4b5563] hover:scale-110 transition"/>
+          <ShoppingBag
+            size={22}
+            className="cursor-pointer text-[#4b5563] hover:scale-110 transition"
+          />
         </div>
       </div>
+      {open && <ProductDetailsCard data={product} setOpen={setOpen} />}
     </div>
   );
 };
