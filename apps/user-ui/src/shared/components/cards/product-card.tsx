@@ -23,7 +23,6 @@ const ProductCard = ({ isEvent, product }: Params) => {
   const deviceInfo = useDeviceTracking();
 
   const addToCart = useStore((state) => state.addToCart);
-  const removeFromCart = useStore((state) => state.removeFromCart);
   const addToWishlist = useStore((state) => state.addToWishlist);
   const removeFromWishlist = useStore((state) => state.removeFromWishlist);
 

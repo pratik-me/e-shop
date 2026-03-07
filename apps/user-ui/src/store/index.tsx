@@ -5,8 +5,9 @@ type Product = {
   id: string;
   title: string;
   price: number;
-  image: string;
+  images: any;
   quantity?: number;
+  sale_price: number;
   shopId: string;
 };
 

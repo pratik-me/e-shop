@@ -1,6 +1,6 @@
 import Header from '../shared/widgets/header';
 import './global.css';
-import { Poppins, Roboto } from "next/font/google"
+import { Poppins, Roboto, Jost } from "next/font/google"
 import Providers from './providers';
 
 export const metadata = {
@@ -12,6 +12,12 @@ const roboto = Roboto({
   subsets: ["latin"],
   weight: ["100", "300", "400", "500", "700", "900"],
   variable: "--font-roboto"
+})
+
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-jost"
 })
 
 const poppins = Poppins({
@@ -27,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${roboto.variable} ${poppins.variable}`}>
+      <body className={`${roboto.variable} ${poppins.variable} ${jost.variable}`}>
         <Providers>
           <Header />
           {children}
