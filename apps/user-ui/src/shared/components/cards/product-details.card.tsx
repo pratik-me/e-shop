@@ -10,6 +10,10 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useStore } from "apps/user-ui/src/store";
+import useUser from "apps/user-ui/src/hooks/useUser";
+import useLocationTracking from "apps/user-ui/src/hooks/useLocationTracking";
+import useDeviceTracking from "apps/user-ui/src/hooks/useDeviceTracking";
 
 type Params = {
   data: any;
@@ -22,9 +26,20 @@ const ProductDetailsCard = ({ data, setOpen }: Params) => {
   const [isSizeSelected, setIsSizeSelected] = useState(data?.sizes?.[0] || "");
   const [quantity, setQuantity] = useState(1);
 
+  const addToCart = useStore((state) => state.addToCart);
+  const cart = useStore((state) => state.cart);
+  const isInCart = cart.some((item) => item.id === data.id);
+  const addToWishlist = useStore((state) => state.addToWishlist);
+  const removeFromWishlist = useStore((state) => state.removeFromWishlist);
+  const wishlist = useStore((state) => state.wishlist);
+  const isWishlisted = wishlist.some((item) => item.id === data.id);
+  const { user } = useUser();
+  const location = useLocationTracking();
+  const deviceInfo = useDeviceTracking();
+
   //! Static Data for now
-    const estimatedDelivery = new Date();
-    estimatedDelivery.setDate(estimatedDelivery.getDate() + 5)
+  const estimatedDelivery = new Date();
+  estimatedDelivery.setDate(estimatedDelivery.getDate() + 5);
 
   const router = useRouter();
 
@@ -214,12 +229,53 @@ const ProductDetailsCard = ({ data, setOpen }: Params) => {
                   +
                 </button>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-[#ff5722] hover:bg-[#e64a19] text-white font-medium rounded-lg transition">
-                <ShoppingCart size={18} /> 
-                <span>Add to Cart</span>
+              <button
+                disabled={isInCart}
+                onClick={() =>
+                  addToCart(
+                    {
+                      ...data,
+                      quantity,
+                      selectedOptions: {
+                        color: isSelected,
+                        size: isSizeSelected,
+                      },
+                    },
+                    user,
+                    location,
+                    deviceInfo
+                  )
+                }
+                className={`flex items-center gap-2 px-4 py-2 bg-[#ff5722] hover:bg-[#e64a19] text-white font-medium rounded-lg transition ${
+                  isInCart ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+              >
+                <ShoppingCart size={18} />
+                <span>{isInCart ? "Added to Cart" : "Add to Cart"}</span>
               </button>
               <button className="opacity-[.7] cursor-pointer">
-                <Heart size={30} fill="red" color="transparent" />
+                <Heart
+                  size={30}
+                  fill={isWishlisted ? "red" : "transparent"}
+                  color={isWishlisted ? "transparent" : "black"}
+                  onClick={() =>
+                    isWishlisted
+                      ? removeFromWishlist(data.id, user, location, deviceInfo)
+                      : addToWishlist(
+                          {
+                            ...data,
+                            quantity,
+                            selectedOptions: {
+                              color: isSelected,
+                              size: isSizeSelected,
+                            },
+                          },
+                          user,
+                          location,
+                          deviceInfo
+                        )
+                  }
+                />
               </button>
             </div>
             <div className="mt-3">
@@ -230,8 +286,8 @@ const ProductDetailsCard = ({ data, setOpen }: Params) => {
               )}
             </div>
             <div className="mt-3 text-gray-600 text-sm">
-                Estimated Delivery:
-                <strong>{` ${estimatedDelivery.toDateString()}`}</strong>
+              Estimated Delivery:
+              <strong>{` ${estimatedDelivery.toDateString()}`}</strong>
             </div>
           </div>
         </div>

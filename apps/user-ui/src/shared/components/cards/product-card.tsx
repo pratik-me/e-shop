@@ -18,7 +18,7 @@ const ProductCard = ({ isEvent, product }: Params) => {
   const [open, setOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
 
-  const user = useUser();
+  const { user } = useUser();
   const location = useLocationTracking();
   const deviceInfo = useDeviceTracking();
 
@@ -149,7 +149,9 @@ const ProductCard = ({ isEvent, product }: Params) => {
         <div className="bg-white rounded-full p-[6px] shadow-md">
           <ShoppingBag
             size={22}
-            className="cursor-pointer text-[#4b5563] hover:scale-110 transition"
+            className={`cursor-pointer transition-transform hover:scale-110 ${
+              isInCart ? "text-blue-600" : "text-[#4b5563]"
+            }`}
             onClick={() =>
               !isInCart &&
               addToCart({ ...product, quantity: 1 }, user, location, deviceInfo)

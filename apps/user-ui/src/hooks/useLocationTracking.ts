@@ -1,6 +1,5 @@
 "use client"
 
-import { timeStamp } from "console";
 import { useEffect, useState } from "react";
 
 const LOCATION_STORAGE_KEY = "user_location";

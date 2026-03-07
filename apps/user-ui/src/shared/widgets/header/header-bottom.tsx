@@ -11,10 +11,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import useUser from "apps/user-ui/src/hooks/useUser";
 import { SignInSection } from "../../components/sign-in-header";
+import { useStore } from "apps/user-ui/src/store";
 
 const HeaderBottom = () => {
   const [show, setShow] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
+  const wishlist = useStore((state) => state.wishlist);
+  const cart = useStore((state) => state.cart);
 
   const { user, isLoading } = useUser();
 
@@ -94,7 +97,10 @@ const HeaderBottom = () => {
                   //     </span>
                   //   </Link>
                   // </>
-                  <SignInSection isLoading={isLoading} Username={user?.name.split(" ")[0]} />
+                  <SignInSection
+                    isLoading={isLoading}
+                    Username={user?.name.split(" ")[0]}
+                  />
                 ) : (
                   // <>
                   //   <Link
@@ -117,13 +123,13 @@ const HeaderBottom = () => {
                 <Link href={"/wishlist"} className="relative">
                   <HeartIcon />
                   <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
-                    <span className="text-white font-medium text-sm">0</span>
+                    <span className="text-white font-medium text-sm">{wishlist?.length}</span>
                   </div>
                 </Link>
                 <Link href={"/cart"} className="relative">
                   <ShoppingCart />
                   <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
-                    <span className="text-white font-medium text-sm">0</span>
+                    <span className="text-white font-medium text-sm">{cart?.length}</span>
                   </div>
                 </Link>
               </div>
