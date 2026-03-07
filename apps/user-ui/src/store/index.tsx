@@ -16,26 +16,26 @@ type Store = {
   addToCart: (
     product: Product,
     user: any,
-    location: string,
+    location: any,
     deviceInfo: string
   ) => void;
   removeFromCart: (
     id: string,
     user: any,
-    location: string,
+    location: any,
     deviceInfo: string
   ) => void;
 
-  addtoWishlist: (
+  addToWishlist: (
     product: Product,
     user: any,
-    location: string,
+    location: any,
     deviceInfo: string
   ) => void;
-  removeToWishlist: (
+  removeFromWishlist: (
     id: string,
     user: any,
-    location: string,
+    location: any,
     deviceInfo: string
   ) => void;
 };
@@ -65,13 +65,13 @@ export const useStore = create<Store>()(
         }))
     },
 
-    addtoWishlist: (product, user, location, deviceInfo) => {
+    addToWishlist: (product, user, location, deviceInfo) => {
         set(state => {
             if(state.wishlist.find(item => item.id === product.id)) return state;
             return {wishlist: [...state.wishlist, product]}
         })
     },
-    removeToWishlist: (id, user, location, deviceInfo) => {
+    removeFromWishlist: (id, user, location, deviceInfo) => {
         const removeProduct = get().wishlist.find(item => item.id === id);
 
         set(state => ({
