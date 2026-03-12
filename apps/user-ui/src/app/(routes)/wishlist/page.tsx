@@ -42,7 +42,7 @@ const WishlistPage = () => {
       <div className="md:w-[80%] w-[95%] mx-auto min-h-screen">
         {/* Breadcrumb */}
         <div className="pb-[50px]">
-          <h1 className="md:pt-[50px] font-medium text-[44px] leading-[1] mb-[16px] font-Poppins">
+          <h1 className="md:pt-[50px] font-medium text-[44px] leading-[1] mb-[16px] font-Jost">
             Wishlist
           </h1>
           <Link href={"/"} className="text-[#55585b] hover:underline">
