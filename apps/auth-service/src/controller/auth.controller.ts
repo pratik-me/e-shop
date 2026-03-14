@@ -82,14 +82,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         const accessToken = jwt.sign({ id: user.id, role: "user" }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "45m" });
         const refreshToken = jwt.sign({ id: user.id, role: "user" }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d" });
 
-        setCookie(res, "refresh-token", refreshToken);
-        setCookie(res, "access-token", accessToken);
+        setCookie(res, "refresh_token", refreshToken);
+        setCookie(res, "access_token", accessToken);
 
         res.status(200).json({
             message: "Login successful",
             user: { id: user.id, name: user.name, email: user.email },
             success: true,
-        })
+        });
     } catch (error) {
         return next(error);
     }
@@ -99,20 +99,24 @@ export const refreshToken = async (req: any, res: Response, next: NextFunction) 
     try {
         const refreshToken = req.cookies["refresh_token"] || req.cookies["seller-refresh-token"] || req.headers.authorization?.split(" ")[1];
 
-        if (!refreshToken) return new ValidationError("Unauthorized! No refresh token found.");
+        // FIXED: Added next() so Express actually sends the error back
+        if (!refreshToken) return next(new ValidationError("Unauthorized! No refresh token found."));
 
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as { id: string, role: string };
 
         if (!decoded || !decoded.id || !decoded.role) return next(new AuthError("Forbidden! Invalid refresh token."));
 
         let account;
-        if (decoded.role === "user") account = await prisma.users.findUnique({ where: { id: decoded.id } });
-        else if (decoded.role === "seller") account = await prisma.sellers.findUnique({
-            where: { id: decoded.id },
-            include: { shop: true },
-        });
+        if (decoded.role === "user") {
+            account = await prisma.users.findUnique({ where: { id: decoded.id } });
+        } else if (decoded.role === "seller") {
+            account = await prisma.sellers.findUnique({
+                where: { id: decoded.id },
+                include: { shop: true },
+            });
+        }
 
-        if (!account) return new AuthError("Forbidden! Account not found.");
+        if (!account) return next(new AuthError("Forbidden! Account not found."));
 
         const newAccessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "45m" });
 
