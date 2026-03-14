@@ -1,17 +1,18 @@
 import { kafka } from "@packages/utils/kafka";
+import { updateUserAnalytics } from "./services/analytics.service";
 
-const consumer = kafka.consumer({groupId: "user-events-group"});
+const consumer = kafka.consumer({ groupId: "user-events-group" });
 
 const eventQueue: any[] = [];
 
-const processQueue = async() => {
-    if(eventQueue.length === 0) return;
+const processQueue = async () => {
+    if (eventQueue.length === 0) return;
 
     const events = [...eventQueue];
     eventQueue.length = 0;
 
-    for(const event of events) {
-        if(event.action === "shop_visit") {
+    for (const event of events) {
+        if (event.action === "shop_visit") {
             // Updating shop analytics
         }
 
@@ -23,10 +24,10 @@ const processQueue = async() => {
             "remove_from_wishlist",
         ]
 
-        if(!event.action || !validActions.includes(event.action)) continue;
+        if (!event.action || !validActions.includes(event.action)) continue;
 
         try {
-            // await updateUserAnalytics(event);
+            await updateUserAnalytics(event);
         } catch (error) {
             console.log("Error processing error:\n", error);
         }
@@ -35,13 +36,13 @@ const processQueue = async() => {
 
 setInterval(processQueue, 3000);
 
-export const consumeKafkaMessage = async() => {
+export const consumeKafkaMessage = async () => {
     await consumer.connect();
-    await consumer.subscribe({topic: "users-events", fromBeginning: false});
+    await consumer.subscribe({ topic: "users-events", fromBeginning: false });
 
     await consumer.run({
-        eachMessage: async({message}) => {
-            if(!message.value) return;
+        eachMessage: async ({ message }) => {
+            if (!message.value) return;
             const event = JSON.parse(message.value.toString());
             eventQueue.push(event);
         }

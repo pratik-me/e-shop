@@ -17,7 +17,7 @@ export const sendKafkaEvent = async(eventData: Props) => {
     try {
         await producer.connect();
         await producer.send({
-            topic: "user_events",
+            topic: "users-events",
             messages: [{value: JSON.stringify(eventData)}],
         });
     } catch (error) {

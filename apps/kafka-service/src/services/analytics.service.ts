@@ -1,12 +1,12 @@
-import prisma from "@packages/libs/prisma"
+import prisma from "@packages/libs/prisma";
 
-export const updateUserAnalytics = async ({ event }: any) => {
+export const updateUserAnalytics = async (event: any) => {
     try {
         const existingData = await prisma.userAnalytics.findUnique({
             where: {
                 userId: event.userId,
             },
-            select: {actions: true},
+            select: { actions: true },
         });
 
         let updatedActions: any = existingData?.actions || [];
@@ -14,8 +14,8 @@ export const updateUserAnalytics = async ({ event }: any) => {
 
         if (event.action === "product_view") {
             updatedActions.push({
-                productId: event?.productId,
-                shopId: event.ShopId,
+                productId: event.productId,
+                shopId: event.shopId,
                 action: event.action,
                 timestamp: new Date()
             })
@@ -37,7 +37,7 @@ export const updateUserAnalytics = async ({ event }: any) => {
         }
 
         // Keep last 100 actions to avoid storage overload
-        if (updatedActions > 100) updatedActions.shift();
+        if (updatedActions.length > 100) updatedActions.shift();
 
         const extraFields: Record<string, any> = {};
         if (event.country) extraFields.country = event.country;

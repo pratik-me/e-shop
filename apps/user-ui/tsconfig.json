@@ -43,6 +43,7 @@
     "src/**/*.jsx",
     "../../packages/**/*.tsx",
     "../../packages/**/*.ts",
+    "../../generated/**/*.ts",
     "../../apps/seller-ui/.next/types/**/*.ts",
     "../../dist/apps/seller-ui/.next/types/**/*.ts",
     "next-env.d.ts"

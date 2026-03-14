@@ -17,6 +17,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "../../generated/**/*.ts",
     "../../packages/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.js",
