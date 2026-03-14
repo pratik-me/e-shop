@@ -1,0 +1,66 @@
+import prisma from "@packages/libs/prisma"
+import { timeStamp } from "node:console";
+
+export const updateUserAnalytics = async ({ event }: any) => {
+    try {
+        const existingData = await prisma.userAnalytics.findUnique({
+            where: {
+                userId: event.userId,
+            }
+        });
+
+        let updatedActions: any = existingData?.actions || [];
+        const actionExists = updatedActions.some((entry: any) => entry.productId === event.productId && event.action === entry.action);
+
+        if (event.action === "product_view") {
+            updatedActions.push({
+                productId: event?.productId,
+                shopId: event.ShopId,
+                action: event.action,
+                timestamp: new Date()
+            })
+        } else if (["add_to_cart", "add_to_wishlist"].includes(event.action) && !actionExists) {
+            updatedActions.push({
+                productId: event?.productId,
+                shopId: event.shopId,
+                action: event?.action,
+                timestamp: new Date(),
+            });
+        }
+        else if (event.action === "remove_from_cart") {   // Removing add_to_wishlist when remove_from_wishlist is triggered
+            updatedActions = updatedActions.filter((entry: any) =>
+                !(
+                    entry.productId === event.productId &&
+                    entry.action === "add_to_cart"
+                )
+            );
+        }
+
+        // Keep last 100 actions to avoid storage overload
+        if (updatedActions > 100) updatedActions.shift();
+
+        const extraFields: Record<string, any> = {};
+        if (event.country) extraFields.country = event.country;
+        if (event.city) extraFields.city = event.city;
+        if (event.device) extraFields.device = event.device;
+
+        // Update and Create user analytics
+        await prisma.userAnalytics.upsert({
+            where: { userId: event.userId },
+            update: {
+                lastVisited: new Date(),
+                actions: updatedActions,
+                ...extraFields,
+            },
+            create: {
+                userId: event?.userId,
+                lastVisited: new Date(),
+                actions: updatedActions,
+                ...extraFields,
+            }
+        });
+    } catch (error) {
+        console.log('Error while storing user analytics:\n', error)
+    }
+}
+
