@@ -1,5 +1,4 @@
 import prisma from "@packages/libs/prisma"
-import { timeStamp } from "node:console";
 
 export const updateUserAnalytics = async ({ event }: any) => {
     try {
