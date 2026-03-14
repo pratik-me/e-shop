@@ -1,12 +1,6 @@
 "use client";
 import { navItems } from "apps/user-ui/src/configs/constants";
-import {
-  AlignLeft,
-  ChevronDown,
-  HeartIcon,
-  ShoppingCart,
-  UserRound,
-} from "lucide-react";
+import { AlignLeft, ChevronDown, HeartIcon, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import useUser from "apps/user-ui/src/hooks/useUser";
@@ -82,22 +76,26 @@ const HeaderBottom = () => {
           {isSticky && (
             <div className="flex items-center gap-8 pb-2">
               <div className="flex items-center gap-2">
-                  <SignInSection
-                    isLoading={isLoading}
-                    username={user ? user?.name.split(" ")[0] : "Sign"}
-                  />
+                <SignInSection
+                  isLoading={isLoading}
+                  username={user ? user.name.split(" ")[0] : "Sign In"}
+                />
               </div>
               <div className="flex items-center gap-5">
                 <Link href={"/wishlist"} className="relative">
                   <HeartIcon />
                   <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
-                    <span className="text-white font-medium text-sm">{wishlist?.length}</span>
+                    <span className="text-white font-medium text-sm">
+                      {wishlist?.length}
+                    </span>
                   </div>
                 </Link>
                 <Link href={"/cart"} className="relative">
                   <ShoppingCart />
                   <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
-                    <span className="text-white font-medium text-sm">{cart?.length}</span>
+                    <span className="text-white font-medium text-sm">
+                      {cart?.length}
+                    </span>
                   </div>
                 </Link>
               </div>
