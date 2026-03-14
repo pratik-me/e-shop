@@ -3,8 +3,12 @@ import axiosInstance from "../utils/axiosInstance";
 
 // Fetch user from API
 const fetchUser = async () => {
-  const response = await axiosInstance.get("/api/logged-in-user");
-  return response.data.user || null;
+  try {
+    const response = await axiosInstance.get("/api/logged-in-user");
+    return response.data.user || null;
+  } catch (error) {
+    return null; 
+  }
 };
 
 const useUser = () => {
@@ -17,7 +21,7 @@ const useUser = () => {
     queryKey: ["user"],
     queryFn: fetchUser,
     staleTime: 1000 * 60 * 5,
-    retry: 1,
+    retry: false,
   });
 
   return { user, isLoading, isError, refetch };

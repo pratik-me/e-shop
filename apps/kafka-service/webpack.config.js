@@ -11,10 +11,6 @@ module.exports = {
     },
     extensions: [".ts", ".js"],
   },
-  clean: true,
-  ...(process.env.NODE_ENV !== "production" && {
-    devtoolModuleFilenameTemplate: "[absolute-resource-path]",
-  }),
   plugins: [
     new NxAppWebpackPlugin({
       target: "node",

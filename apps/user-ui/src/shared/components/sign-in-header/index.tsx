@@ -3,15 +3,18 @@ import Link from "next/link";
 
 export const SignInSection = ({
   isLoading,
-  Username,
+  username,
 }: {
   isLoading: boolean;
-  Username: string;
+  username: string;
 }) => {
+  const isGuest = username === "Sign In";
+  const targetHref = isGuest ? "/login" : "/profile";
+
   return (
     <>
       <Link
-        href={Username === "Sign In" ? "/login" : "/profile"}
+        href={targetHref}
         className="border-2 w-[50px] h-[50px] flex-shrink-0 flex items-center justify-center rounded-full border-[#010f1c1a]"
       >
         <UserRound size={26} />
@@ -25,12 +28,14 @@ export const SignInSection = ({
           </div>
         ) : (
           <>
-            <div className="text-sm font-medium leading-tight">Hello, </div>
+            <div className="text-sm font-medium leading-tight">
+               {isGuest ? "Welcome," : "Hello,"} 
+            </div>
             <Link
-              href={Username === "Sign In" ? "/login" : "/profile"}
-              className="text-sm font-semibold text-gray-700 hover:text-blue-700 leading-tight"
+              href={targetHref}
+              className="text-sm font-semibold text-gray-700 hover:text-blue-700 leading-tight truncate"
             >
-              {Username}
+              {username}
             </Link>
           </>
         )}
