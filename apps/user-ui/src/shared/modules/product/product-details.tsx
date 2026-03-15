@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import InnerImageZoom from "react-inner-image-zoom";
@@ -7,6 +7,9 @@ import "react-inner-image-zoom/lib/styles.min.css";
 import Ratings from "../../components/ratings";
 import Link from "next/link";
 import { useStore } from "apps/user-ui/src/store";
+import useUser from "apps/user-ui/src/hooks/useUser";
+import useLocationTracking from "apps/user-ui/src/hooks/useLocationTracking";
+import useDeviceTracking from "apps/user-ui/src/hooks/useDeviceTracking";
 
 const ProductDetails = ({ productDetails }: { productDetails: any }) => {
   const [currentImage, setCurrentImage] = useState(
@@ -25,6 +28,10 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
     1199,
   ]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
+
+  const {user} = useUser();
+  const location = useLocationTracking();
+  const deviceInfo = useDeviceTracking();
 
   const addToCart = useStore((state) => state.addToCart);
   const cart = useStore((state) => state.cart);
@@ -230,6 +237,32 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
                   </span>
                 )}
               </div>
+              <button
+                className={`flex mt-6 items-center gap-2 px-5 py-[10px] bg-[#ff5722] bg-[#e64919c3] text-white font-medium rounded-lg transition ${
+                  isInCart || productDetails?.stock === 0
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+                disabled={isInCart || productDetails?.stock === 0}
+                onClick={() =>
+                  addToCart(
+                    {
+                      ...productDetails,
+                      quantity,
+                      selectedOptions: {
+                        color: isSelected,
+                        size: isSizeSelected,
+                      },
+                    },
+                    user,
+                    location,
+                    deviceInfo,
+                  )
+                }
+              >
+                <ShoppingBag size={18} />
+                Add to Cart
+              </button>
             </div>
           </div>
         </div>
