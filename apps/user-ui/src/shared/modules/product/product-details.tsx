@@ -1,5 +1,14 @@
 "use client";
-import { ChevronLeft, ChevronRight, Heart, ShoppingBag } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  MapPin,
+  MessageSquareText,
+  Package,
+  ShoppingBag,
+  WalletMinimal,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import InnerImageZoom from "react-inner-image-zoom";
@@ -29,7 +38,7 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
   ]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
 
-  const {user} = useUser();
+  const { user } = useUser();
   const location = useLocationTracking();
   const deviceInfo = useDeviceTracking();
 
@@ -62,7 +71,7 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
   );
   return (
     <div className="w-full bg-[#f5f5f5] py-5">
-      <div className="w-[90%] bg-white lg:w-[80%] mx-auto pt-6 grid grid-cols-1 lg:grid-cols-[28%_44%_28%] gap-6 overflow-hidden">
+      <div className="w-[90%] bg-white lg:w-[80%] mx-auto pt-6 grid grid-cols-1 lg:grid-cols-[28%_40%_32%] gap-6 overflow-hidden">
         {/* Left column - Product Images */}
         <div className="p-4">
           <div className="relative w-full">
@@ -131,9 +140,31 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
             <div>
               <Heart
                 size={25}
-                fill="red"
+                fill={isWishlisted ? "red" : "transparent"}
                 className="cursor-pointer"
-                color="transparent"
+                color={isWishlisted ? "transparent" : "#777"}
+                onClick={() =>
+                  isWishlisted
+                    ? removeFromWishlist(
+                        productDetails.id,
+                        user,
+                        location,
+                        deviceInfo
+                      )
+                    : addToWishlist(
+                        {
+                          ...productDetails,
+                          quantity,
+                          selectedOptions: {
+                            color: isSelected,
+                            size: isSizeSelected,
+                          },
+                        },
+                        user,
+                        location,
+                        deviceInfo
+                      )
+                }
               />
             </div>
           </div>
@@ -155,7 +186,9 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
               <span className="text-gray-400 line-through">
                 ${productDetails?.regular_price}
               </span>
-              <span className="text-gray-500">-{discountPercentage}%</span>
+              <span className="text-[14px] text-gray-500">
+                -{discountPercentage}%
+              </span>
             </div>
             <div className="mt-2">
               <div className="flex flex-col md:flex-row items-start gap-5 mt-4">
@@ -256,13 +289,89 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
                     },
                     user,
                     location,
-                    deviceInfo,
+                    deviceInfo
                   )
                 }
               >
                 <ShoppingBag size={18} />
                 Add to Cart
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column - Seller Information */}
+        <div className="bg-[#fafafa] -mt-6">
+          <div className="mb-1 p-3 border-b border-b-gray-100">
+            <span className="text-sm text-gray-600">Delivery Option</span>
+            <div className="flex items-center text-gray-600 gap-1">
+              <MapPin size={18} className="ml-[-5px]" />
+              <span className="text-lg font-medium">
+                {location?.city + ", " + location?.country}
+              </span>
+            </div>
+          </div>
+          <div className="mb-1 px-3 pb-1 border-b border-b-gray-100">
+            <span className="text-sm text-gray-600">Return & Warranty</span>
+            <div className="flex items-center text-gray-600 gap-1">
+              <Package size={18} className="ml-[-5px]" />
+              <span className="text-base font-normal">7 Days Return</span>
+            </div>
+            <div className="flex items-center py-2 text-gray-600 gap-1">
+              <WalletMinimal size={18} className="ml-[-5px]" />
+              <span className="text-base font-normal">
+                {productDetails?.warranty}
+              </span>
+            </div>
+          </div>
+          <div className="px-3 py-1">
+            <div className="w-[85%] rounded-lg">
+              {/* Sold By */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-sm text-gray-600 font-light">
+                    Sold By
+                  </span>
+                  <span className="block max-w-[150px] truncate font-medium text-lg">
+                    {productDetails?.Shop?.name}
+                  </span>
+                </div>
+                <Link
+                  href={"#"}
+                  className="text-blue-500 text-sm flex items-center gap-1"
+                >
+                  <MessageSquareText />
+                  Chat Now
+                </Link>
+              </div>
+              {/* Seller performance test */}
+              <div className="grid grid-cols-3 gap-2 border-t border-t-gray-200 mt-3 pt-3">
+                <div>
+                  <p className="text-[12px] text-gray-500">
+                    Positive Seller Ratings
+                  </p>
+                  <p className="text-lg font-semibold">88%</p>
+                </div>
+                <div>
+                  <p className="text-[12px] text-gray-500">Ship on Time</p>
+                  <p className="text-lg font-semibold">100%</p>
+                </div>
+                <div>
+                  <p className="text-[12px] text-gray-500">
+                    Chat Response Rate
+                  </p>
+                  <p className="text-lg font-semibold">100%</p>
+                </div>
+              </div>
+              {/* Go to Store */}
+              <div className="text-center mt-4 border-t border-t-gray-200 pt-2">
+                <Link
+                  href={`/shop/${productDetails?.Shop.id}`}
+                  className="text-blue-500 font-medium text-sm hover:underline"
+                >
+                    GO TO STORE
+                </Link>
+              </div>
             </div>
           </div>
         </div>
