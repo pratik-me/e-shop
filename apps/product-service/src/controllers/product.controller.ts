@@ -438,7 +438,7 @@ export const getProductDetails = async (req: Request, res: Response, next: NextF
   try {
     const product = await prisma.products.findUnique({
       where: {
-        slug : req.params.slug
+        slug: req.params.slug!,
       },
       include: {
         images: true,
