@@ -10,7 +10,7 @@ import {
   WalletMinimal,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InnerImageZoom from "react-inner-image-zoom";
 import "react-inner-image-zoom/lib/styles.min.css";
 import Ratings from "../../components/ratings";
@@ -19,6 +19,8 @@ import { useStore } from "apps/user-ui/src/store";
 import useUser from "apps/user-ui/src/hooks/useUser";
 import useLocationTracking from "apps/user-ui/src/hooks/useLocationTracking";
 import useDeviceTracking from "apps/user-ui/src/hooks/useDeviceTracking";
+import ProductCard from "../../components/cards/product-card";
+import axiosInstance from "apps/user-ui/src/utils/axiosInstance";
 
 const ProductDetails = ({ productDetails }: { productDetails: any }) => {
   const [currentImage, setCurrentImage] = useState(
@@ -69,6 +71,25 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
       productDetails.regular_price) *
       100
   );
+
+  const fetchFilteredProducts = async () => {
+    try {
+      const query = new URLSearchParams();
+      query.set("priceRange", priceRange.join(","));
+      query.set("page", '1');
+      query.set("limit", "5");
+
+      const res = await axiosInstance.get(`/product/api/get-filtered-products?${query.toString()}`);
+      setRecommendedProducts(res.data.products);
+    } catch (error) {
+      console.log("Failed to fetch filtered products\n", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchFilteredProducts();
+  }, [priceRange]);
+  
   return (
     <div className="w-full bg-[#f5f5f5] py-5">
       <div className="w-[90%] bg-white lg:w-[80%] mx-auto pt-6 grid grid-cols-1 lg:grid-cols-[28%_40%_32%] gap-6 overflow-hidden">
@@ -369,11 +390,43 @@ const ProductDetails = ({ productDetails }: { productDetails: any }) => {
                   href={`/shop/${productDetails?.Shop.id}`}
                   className="text-blue-500 font-medium text-sm hover:underline"
                 >
-                    GO TO STORE
+                  GO TO STORE
                 </Link>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="w-[90%] lg:w-[80%] mx-auto mt-5">
+        <div className="bg-white min-h-[60vh] h-full p-5">
+          <h3 className="text-lg font-semibold">
+            Product details of {productDetails?.title}
+          </h3>
+          <div
+            className="prose prose-sm text-slate-500 max-w-none"
+            dangerouslySetInnerHTML={{
+              __html: productDetails?.detailed_description,
+            }}
+          ></div>
+        </div>
+      </div>
+
+      <div className="w-[90%] lg:w-[80%] mx-auto">
+        <div className="bg-white min-h-[50vh] h-full mt-5 p-5">
+            <h3 className="text-lg font-semibold">
+                Ratings and Reviews of {productDetails?.title}
+            </h3>
+            <p className="text-center pt-14 font-semibold">No reviews available yet</p>
+        </div>
+      </div>
+      <div className="w-[90%] lg:w-[80%] mx-auto">
+        <div className="w-full h-full my-5 p-5">
+            <h3 className="text-xl font-semibold mb-2">You may also like this</h3>
+            <div className="m-auto grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+              {recommendedProducts?.map((item: any) => (
+                <ProductCard key={item.id} product={item}/>
+              ))}
+            </div>
         </div>
       </div>
     </div>
