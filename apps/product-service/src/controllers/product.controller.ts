@@ -457,13 +457,13 @@ export const getProductDetails = async (req: Request, res: Response, next: NextF
 
 export const getFilteredProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { 
+    const {
       priceRange = [0, 10000],
       categories = [],
-      colors = [], 
-      sizes = [], 
-      page = 1, 
-      limit = 12 
+      colors = [],
+      sizes = [],
+      page = 1,
+      limit = 12
     } = req.body;
     const parsedPriceRange = typeof priceRange === "string" ? priceRange.split(",").map(Number) : [0, 10000];
     const parsedPage = Number(page);
@@ -526,12 +526,12 @@ export const getFilteredProducts = async (req: Request, res: Response, next: Nex
 
 export const getFilteredEvents = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { 
-      priceRange = [0, 10000], 
-      categories = [], colors = [], 
-      sizes = [], 
-      page = 1, 
-      limit = 12 
+    const {
+      priceRange = [0, 10000],
+      categories = [], colors = [],
+      sizes = [],
+      page = 1,
+      limit = 12
     } = req.body;
 
     const parsedPriceRange = typeof priceRange === "string" ? priceRange.split(",").map(Number) : [0, 10000];
@@ -595,7 +595,7 @@ export const getFilteredEvents = async (req: Request, res: Response, next: NextF
   }
 }
 
-export const getFilteredShops = async(req: Request, res: Response, next: NextFunction) => {
+export const getFilteredShops = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       categories = [],
@@ -616,7 +616,7 @@ export const getFilteredShops = async(req: Request, res: Response, next: NextFun
       }
     };
 
-    if(countries && String(countries).length > 0) {
+    if (countries && String(countries).length > 0) {
       filters.country = {
         in: Array.isArray(countries) ? countries : String(countries).split(","),
       };
@@ -647,7 +647,47 @@ export const getFilteredShops = async(req: Request, res: Response, next: NextFun
       },
     });
   } catch (error) {
-    
+    next(error);
   }
 }
 
+export const searchProducts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const query = req.query.q as string;
+    if (!query || query.trim().length === 0) {
+      return res.status(400).json({ message: "Search query is required." })
+    }
+
+    const products = await prisma.products.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+              mode: "insensitive",
+            }
+          },
+          {
+            short_description: {
+              contains: query,
+              mode: "insensitive",
+            }
+          }
+        ]
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+      },
+      take: 10,
+      orderBy: {
+        createdAt: "desc"
+      }
+    });
+
+    return res.status(200).json({products});
+  } catch (error) {
+    return next(error);
+  }
+}
