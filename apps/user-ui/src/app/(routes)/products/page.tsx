@@ -32,7 +32,7 @@ const Page = () => {
       params.set("colors", selectedColors.join(","));
     if (selectedSizes.length > 0) params.set("sizes", selectedSizes.join(","));
     params.set("page", page.toString());
-    router.replace(`/product?${decodeURIComponent(params.toString())}`);
+    router.replace(`/products?${decodeURIComponent(params.toString())}`);
   };
 
   const fetchFilteredProducts = async () => {
@@ -44,8 +44,7 @@ const Page = () => {
         query.set("categories", selectedCategories.join(","));
       if (selectedColors.length > 0)
         query.set("colors", selectedColors.join(","));
-      if (selectedSizes.length > 0) 
-        query.set("sizes", selectedSizes.join(","));
+      if (selectedSizes.length > 0) query.set("sizes", selectedSizes.join(","));
       query.set("page", page.toString());
       query.set("limit", "12");
 
@@ -93,6 +92,7 @@ const Page = () => {
     updateURL();
     fetchFilteredProducts();
   }, [priceRange, selectedCategories, selectedColors, selectedSizes, page]);
+
   return (
     <div className="w-full bg-[#f5f5f5] pb-10">
       <div className="w-[90%] lg:w-[80%] m-auto">
@@ -135,9 +135,8 @@ const Page = () => {
                           left: `${precentageLeft}%`,
                           width: `${precentageRight - precentageLeft}%`,
                         }}
-                      >
-                        {children}
-                      </div>
+                      />
+                      {children}
                     </div>
                   );
                 }}
@@ -148,7 +147,7 @@ const Page = () => {
                       key={key}
                       {...rest}
                       className="w-[16px] h-[16px] bg-blue-600 rounded-full shadow"
-                    ></div>
+                    />
                   );
                 }}
               />
@@ -215,9 +214,8 @@ const Page = () => {
                     <span
                       className="w-[16px] h-[16px] rounded-full border border-gray-200"
                       style={{ backgroundColor: color.code }}
-                    >
-                      {color.name}
-                    </span>
+                    />
+                    <span>{color.name}</span>
                   </label>
                 </li>
               ))}
@@ -247,37 +245,38 @@ const Page = () => {
           {/* Product grid */}
           <div className="flex-1 px-2 lg:px-3">
             {isProductLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <div
-                    className="h-[250px] bg-gray-300 animate-pulse rounded-xl"
-                    key={index}
-                  ></div>
-                ))}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className="flex flex-col gap-3">
+                  <div className="h-[200px] w-full bg-gray-200 animate-pulse rounded-xl" />
+                </div>
+              ))}
+            </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
-              <p>No Product found!</p>
+              <p className="text-center font-semibold">No Product found!</p>
             )}
 
-            {
-              totalPages > 1 && (
-                <div className="flex justify-center mt-8 gap-2">
-                  {
-                    Array.from({length: totalPages}).map((_, i) => (
-                      <button key={i + 1} onClick={() => setPage(i + 1)} className={`px-3 py-1 !rounded border border-gray-200 text-sm ${page === i + 1} ? "bg-blue-600 text-white" : "bg-white text-black"`}>
-                        {i + 1}
-                      </button>
-                    ))
-                  }
-                </div>
-              )
-            }
+            {totalPages > 1 && (
+              <div className="flex justify-center mt-8 gap-2">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => setPage(i + 1)}
+                    className={`px-3 py-1 !rounded border border-gray-200 text-sm ${
+                      page === i + 1
+                    } ? "bg-blue-600 text-white" : "bg-white text-black"`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -98,13 +98,13 @@ const Page = () => {
       <div className="w-[90%] lg:w-[80%] m-auto">
         <div className="pb-[50px]">
           <h1 className="md:pt-[40px] font-medium text-[44px] leading-1 mb-[14px] font-Jost">
-            All Products
+            Offers
           </h1>
           <Link href={"/"} className="text-[#55585b] hover:underline">
             Home
           </Link>
           <span className="inline-block p-[1.5px] mx-1 bg-[#a8acb0] rounded-full"></span>
-          <span className="text-[#55585b]">All Products</span>
+          <span className="text-[#55585b]">Offers</span>
         </div>
 
         <div className="w-full flex flex-col lg:flex-row gap-8">
@@ -135,9 +135,8 @@ const Page = () => {
                           left: `${precentageLeft}%`,
                           width: `${precentageRight - precentageLeft}%`,
                         }}
-                      >
+                      />
                         {children}
-                      </div>
                     </div>
                   );
                 }}
@@ -148,7 +147,7 @@ const Page = () => {
                       key={key}
                       {...rest}
                       className="w-[16px] h-[16px] bg-blue-600 rounded-full shadow"
-                    ></div>
+                    />
                   );
                 }}
               />
@@ -215,7 +214,8 @@ const Page = () => {
                     <span
                       className="w-[16px] h-[16px] rounded-full border border-gray-200"
                       style={{ backgroundColor: color.code }}
-                    >
+                    />
+                    <span>
                       {color.name}
                     </span>
                   </label>
@@ -247,7 +247,7 @@ const Page = () => {
           {/* Product grid */}
           <div className="flex-1 px-2 lg:px-3">
             {isProductLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {Array.from({ length: 10 }).map((_, index) => (
                   <div
                     className="h-[250px] bg-gray-300 animate-pulse rounded-xl"
@@ -256,13 +256,13 @@ const Page = () => {
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {products.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             ) : (
-              <p>No Product found!</p>
+              <p className="text-center font-semibold">No Offers available right now!</p>
             )}
 
             {

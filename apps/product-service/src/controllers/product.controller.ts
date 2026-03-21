@@ -458,7 +458,7 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
       type === "latest"
         ? { createdAt: "desc" }
         : { totalSales: "desc" };
-    const [products, total, top10Products] = await Promise.all([
+    const [events, total, top10Products] = await Promise.all([
       prisma.products.findMany({
         skip, take: limit, include: {
           images: true,
@@ -479,7 +479,7 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
     ]);
 
     res.status(200).json({
-      products,
+      events,
       top10By: type === "latest" ? "latest" : "topSales",
       top10Products,
       total,

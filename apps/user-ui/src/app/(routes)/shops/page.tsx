@@ -152,7 +152,7 @@ const Page = () => {
                 ))}
               </div>
             ) : (
-              <p>No Shops found!</p>
+              <p className="text-center font-semibold">No Shops found!</p>
             )}
 
             {
