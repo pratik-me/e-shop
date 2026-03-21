@@ -64,6 +64,7 @@ model shops {
   updatedAt        DateTime           @updatedAt
   products         products[]
   productAnalytics productAnalytics[]
+  orders           orders[]
 }
 
 model sellers {
@@ -166,4 +167,11 @@ model userAnalytics {
   lastTrained DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model orders {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  shopId     String @db.ObjectId
+  total Int    @default(0)
+  shop       shops  @relation(fields: [shopId], references: [id])
 }
