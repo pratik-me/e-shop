@@ -1,6 +1,6 @@
 "use client";
 import { categories } from "apps/user-ui/src/configs/categories";
-import ProductCard from "apps/user-ui/src/shared/components/cards/product-card";
+import { countries } from "apps/user-ui/src/configs/countries";
 import ShopCard from "apps/user-ui/src/shared/components/cards/shop-card";
 import axiosInstance from "apps/user-ui/src/utils/axiosInstance";
 import Link from "next/link";
@@ -94,17 +94,40 @@ const Page = () => {
             <ul className="space-y-2 !mt-3">
             {categories?.map((category: any) => (
                 <li
-                key={category}
+                key={category.label}
                 className="flex items-center justify-between"
                 >
                 <label className="flex items-center gap-3 text-sm text-gray-700">
                     <input
                     type="checkbox"
-                    checked={selectedCategories.includes(category)}
-                    onChange={() => toggleCategory(category)}
+                    checked={selectedCategories.includes(category.value)}
+                    onChange={() => toggleCategory(category.value)}
                     className="accent-blue-600"
                     />
-                    {category}
+                    {category.value}
+                </label>
+                </li>
+            ))}
+            </ul>
+
+            {/* Countries */}
+            <h3 className="text-xl font-Poppins font-medium border-b border-b-slate-300 pb-1">
+              Countries
+            </h3>
+            <ul className="space-y-2 !mt-3">
+            {countries?.map((country: any) => (
+                <li
+                key={country}
+                className="flex items-center justify-between"
+                >
+                <label className="flex items-center gap-3 text-sm text-gray-700">
+                    <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(country)}
+                    onChange={() => toggleCountry(country)}
+                    className="accent-blue-600"
+                    />
+                    {country}
                 </label>
                 </li>
             ))}
