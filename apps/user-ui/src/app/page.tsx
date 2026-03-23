@@ -117,7 +117,7 @@ const Page = () => {
 
         {!offersLoading && !isError && (
           <div className="m-auto grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 2xl:grid-cols-5 gap-5">
-            {latestProducts?.map((offer: any) => (
+            {offers?.map((offer: any) => (
               <ProductCard key={offer.id} product={offer} isEvent={true} />
             ))}
           </div>

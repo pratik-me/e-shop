@@ -137,7 +137,7 @@ const Page = () => {
           {/* Shop grid */}
           <div className="flex-1 px-2 lg:px-3">
             {isShopLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {Array.from({ length: 10 }).map((_, index) => (
                   <div
                     className="h-[250px] bg-gray-300 animate-pulse rounded-xl"
@@ -146,7 +146,7 @@ const Page = () => {
                 ))}
               </div>
             ) : shops.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {shops.map((shop) => (
                   <ShopCard key={shop.id} shop={shop} />
                 ))}

@@ -10,7 +10,6 @@
   },
   "private": true,
   "dependencies": {
-    "@headlessui/react": "^2.2.9",
     "@imagekit/nodejs": "^7.3.0",
     "@imagekit/react": "^5.0.2",
     "@prisma/client": "6.19",

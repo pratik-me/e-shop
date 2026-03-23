@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { createShop, createStripeConnectLink, getSeller, getUser, loginSeller, loginUser, refreshToken, registerSeller, resetUserPassword, userForgotPassword, userRegistration, verifySeller, verifyUser, verifyUserForgotPassword } from "../controller/auth.controller";
+import { addUserAddress, createShop, createStripeConnectLink, deleteUserAddress, getSeller, getUser, getUserAddresses, loginSeller, loginUser, refreshToken, registerSeller, resetUserPassword, userForgotPassword, userRegistration, verifySeller, verifyUser, verifyUserForgotPassword } from "../controller/auth.controller";
 import isAuthenticated from "@packages/middleware/isAuthenticated";
 import { isSeller } from "@packages/middleware/authorizeRoles";
 
@@ -13,6 +13,10 @@ router.get("/logged-in-user", isAuthenticated, getUser)
 router.post("/forgot-password-user", userForgotPassword)
 router.post("/verify-forgot-password-user", verifyUserForgotPassword)
 router.post("/reset-password-user", resetUserPassword)
+
+router.post("/add-address", isAuthenticated, addUserAddress);
+router.get("/shipping-addresses", isAuthenticated, getUserAddresses);
+router.delete("/delete-address/:addressId", isAuthenticated, deleteUserAddress);
 
 router.post("/seller-registration", registerSeller)
 router.post("/verify-seller", verifySeller)
