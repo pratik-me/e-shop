@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "apps/user-ui/src/utils/axiosInstance";
-import { MapPin, Plus, Trash2, X } from "lucide-react";
+import { MapPin, Plus, Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import AddressModal from "./addressModal";
@@ -285,7 +285,11 @@ const ShippingAddressSection = () => {
         //     </form>
         //   </div>
         // </div>
-        <AddressModal setShowModal={setShowModal} addAddress={addAddress} onSubmit={onSubmit} />
+        <AddressModal
+          setShowModal={setShowModal}
+          addAddress={addAddress}
+          onSubmit={onSubmit}
+        />
       )}
     </div>
   );

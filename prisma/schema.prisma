@@ -32,6 +32,7 @@ model users {
   shopReviews   shopReviews[]
   userAnalytics userAnalytics[]
   addresses     addresses[]
+  orders        orders[]
 }
 
 model shopReviews {
@@ -143,10 +144,10 @@ model products {
 
 model productAnalytics {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  views        Int
-  cartAdds     Int
-  wishlistAdds Int
-  purchases    Int?
+  views        Int?     @default(0)
+  cartAdds     Int?     @default(0)
+  wishlistAdds Int?     @default(0)
+  purchases    Int?     @default(0)
   lastViewedAt DateTime
   createdAt    DateTime @default(now())
   updateAt     DateTime @updatedAt
@@ -163,33 +164,50 @@ model userAnalytics {
   country     String?
   city        String?
   device      String?
-  actions     Json[]
+  actions     Json
   lastVisited DateTime
   lastTrained DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
 
+model orderItem {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String
+  quantity        Int
+  price           Float
+  selectedOptions Json?
+  orderId         String @db.ObjectId
+  order           orders @relation(fields: [orderId], references: [id])
+}
+
 model orders {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  shopId String @db.ObjectId
-  total  Int    @default(0)
-  shop   shops  @relation(fields: [shopId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String      @db.ObjectId
+  shopId            String      @db.ObjectId
+  total             Float       @default(0)
+  status            String
+  shippingAddressId String?
+  couponCode        String?
+  discountAmount    Int?
+  items             orderItem[]
+  shop              shops       @relation(fields: [shopId], references: [id])
+  user              users       @relation(fields: [userId], references: [id])
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }
 
 model addresses {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   label     String
   name      String
   street    String
   city      String
   zip       String
   country   String
-  isDefault Boolean @default(true)
-  userId    String @db.ObjectId
-  user      users  @relation(fields: [userId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isDefault Boolean  @default(true)
+  userId    String   @db.ObjectId
+  user      users    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
