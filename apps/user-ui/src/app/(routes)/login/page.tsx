@@ -1,5 +1,5 @@
 'use client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import GoogleButton from 'apps/user-ui/src/shared/components/google-button';
 import axios, { AxiosError } from 'axios';
 import { Eye, EyeOff } from 'lucide-react';
@@ -19,6 +19,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
@@ -31,6 +32,7 @@ const Login = () => {
     },
     onSuccess: () => {
       setServerError(null)
+      queryClient.invalidateQueries({ queryKey: ['user'] });
       router.push("/")
     },
     onError: (error: AxiosError) => {

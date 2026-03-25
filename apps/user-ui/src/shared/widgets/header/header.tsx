@@ -11,6 +11,7 @@ const Header = () => {
   const { user, isLoading } = useUser();
   const wishlist = useStore((state) => state.wishlist);
   const cart = useStore((state) => state.cart);
+
   return (
     <div className="w-full bg-white">
       <div className="w-[80%] py-5 m-auto flex items-center justify-between">
