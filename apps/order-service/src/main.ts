@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from "cors";
 import cookieParser from "cookie-parser"
-import {errorMiddleware} from "@packages/error-handler/error-middleware"
+import { errorMiddleware } from "@packages/error-handler/error-middleware"
 import router from './routes/order.route';
+import bodyParser from "body-parser"
+import { createOrder } from './controllers/order.controller';
 
 const app = express();
 
@@ -18,11 +20,19 @@ app.use(
   })
 )
 
+app.post(
+  "/api/create-order",
+  bodyParser.raw({ type: "application/json" }),
+  (req, res, next) => {
+    (req as any).rawBody = req.body;
+    next();
+  }, createOrder);
+
 app.use(express.json());
 app.use(cookieParser())
 
 app.get("/", (req, res) => {
-  res.send({message: "Welcome to order-service"})
+  res.send({ message: "Welcome to order-service" })
 })
 
 // Routes
