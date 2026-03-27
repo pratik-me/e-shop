@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { loadStripe, Appearance } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import axiosInstance from "apps/user-ui/src/utils/axiosInstance";
 import { XCircle } from "lucide-react";
 import CheckoutForm from "apps/user-ui/src/shared/components/checkout/checkoutForm";
@@ -32,7 +32,7 @@ const Page = () => {
 
       try {
         const verifyResult = await axiosInstance.get(
-          `/order/api/verifying-payment-session?sessionId=${sessionId}`,
+          `/order/api/verifying-payment-session?sessionId=${sessionId}`
         );
 
         const { totalAmount, sellers, cart, coupon } =
@@ -58,7 +58,7 @@ const Page = () => {
               : totalAmount,
             sellerStripeAccountId,
             sessionId,
-          },
+          }
         );
 
         setClientSecret(intentResult.data.clientSecret);
@@ -68,9 +68,9 @@ const Page = () => {
       } finally {
         setLoading(false);
       }
-
-      fetchSessionAndClientSecret();
     };
+
+    fetchSessionAndClientSecret();
   }, [sessionId]);
 
   const appearance: Appearance = { theme: "stripe" };
@@ -108,7 +108,12 @@ const Page = () => {
   return (
     clientSecret && (
       <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
-        <CheckoutForm clientSecret={clientSecret} cartItems={cartItems} coupon={coupon} sessionId={sessionId}/>
+        <CheckoutForm
+          clientSecret={clientSecret}
+          cartItems={cartItems}
+          coupon={coupon}
+          sessionId={sessionId}
+        />
       </Elements>
     )
   );

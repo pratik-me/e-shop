@@ -30,18 +30,23 @@ const CartPage = () => {
   const createPaymentSession = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.post("/order/api/create-payment-session", {
-        cart, selectedAddressId, coupon: {}
-      });
+      const res = await axiosInstance.post(
+        "/order/api/create-payment-session",
+        {
+          cart,
+          selectedAddressId,
+          coupon: {},
+        }
+      );
 
       const sessionId = res.data.sessionId;
       router.push(`checkout?sessionId=${sessionId}`);
     } catch (error) {
-      toast.error("Something went wrong. Please try again later")
+      toast.error("Something went wrong. Please try again later");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const decreaseQuantity = (id: string) => {
     useStore.setState((state) => ({
@@ -272,7 +277,6 @@ const CartPage = () => {
                       Please add an address in profile to create an order!
                     </p>
                   )}
-
                 </div>
                 <hr className="my-4 text-slate-200" />
                 <div className="mb-4">

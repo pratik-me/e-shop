@@ -1,12 +1,11 @@
-import { useElements, useStripe } from "@stripe/react-stripe-js";
-import e from "express";
+import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import React, { useState } from "react";
 
 type Props = {
   clientSecret: string;
-  cartItems: { sale_price: number; quantity: number }[];
-  coupon: { discountAmount?: number } | null;
+  cartItems: any[];
+  coupon: any;
   sessionId: string | null;
 };
 
@@ -27,7 +26,7 @@ const CheckoutForm = ({
     cartItems.reduce((sum, item) => sum + item.sale_price * item.quantity, 0) -
     (coupon?.discountAmount ? coupon?.discountAmount : 0);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg(null);
@@ -36,6 +35,22 @@ const CheckoutForm = ({
       setLoading(false);
       return;
     }
+
+    const result = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/payment-success?sessionId=${sessionId}`,
+      }
+    });
+
+    if(result.error) {
+      setStatus("failed");
+      setErrorMsg(result.error.message || "Something went wrong while processing payment")
+    } else {
+      setStatus("success")
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -54,11 +69,11 @@ const CheckoutForm = ({
           ))}
 
           <div className="flex justify-between font-semibold pt-2 border-t border-t-gray-200">
-            {coupon?.discountAmount && coupon?.discountAmount !== 0 && (
+            {!!coupon?.discountAmount && coupon?.discountAmount !== 0 && (
               <>
                 <span>Discount</span>
                 <span className="text-gray-600">
-                  ${(coupon?.discountAmount).toFixed(2)}
+                  ${(coupon?.discountAmount)?.toFixed(2)}
                 </span>
               </>
             )}
@@ -75,7 +90,7 @@ const CheckoutForm = ({
           </div>
         </div>
 
-        {/* <PaymentElement /> */}
+        <PaymentElement />
         <button
           type="submit"
           disabled={!stripe || loading}

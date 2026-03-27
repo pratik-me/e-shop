@@ -5,7 +5,6 @@ import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import Stripe from "stripe"
 import { Prisma } from "generated/prisma/client";
-import { InputJsonArray } from "generated/prisma/internal/prismaNamespace";
 import { sendEmail } from "../utils/send-mail";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -36,7 +35,8 @@ export const createPaymentIntent = async (req: any, res: Response, next: NextFun
         res.send({
             clientSecret: paymentIntent.client_secret,
         })
-    } catch (error) {
+    } catch (error: any) {
+        console.log("Stripe error: ", error.message)
         next(error);
     }
 }
@@ -156,7 +156,7 @@ export const createOrder = async (req: any, res: Response, next: NextFunction) =
             event = stripe.webhooks.constructEvent(
                 rawBody,
                 stripeSignature,
-                process.env.STRIPE_WEBHOOK_KEY!
+                process.env.STRIPE_WEBHOOK_SECRET!
             );
         } catch (error: any) {
             console.log("Webhook signature validation failed:\n", error.message);
@@ -329,3 +329,39 @@ export const createOrder = async (req: any, res: Response, next: NextFunction) =
     }
 }
 
+// Sellers Order
+export const getSellerOrders = async (req: any, res: Response, next: NextFunction) => {
+    try {
+        const shop = await prisma.shops.findUnique({
+            where: {
+                sellerId: req.seller.id,
+            },
+        });
+
+        const orders = await prisma.orders.findMany({
+            where: {
+                shopId: shop?.id,
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatar: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        res.status(201).json({
+            success: true,
+            orders,
+        })
+    } catch (error) {
+        next(error)
+    }
+}

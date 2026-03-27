@@ -6,14 +6,20 @@ const LOCATION_STORAGE_KEY = "user_location";
 const LOCATION_EXPIRY_DAYS = 20;
 
 const getStoredLocation = () => {
-    const storedData = localStorage.getItem(LOCATION_STORAGE_KEY);
-    if(!storedData) return null;
+    const [location, setLocation] = useState<any | null>(null);
 
-    const parsedData = JSON.parse(storedData);
+    useEffect(() => {
+        const storedData = localStorage.getItem(LOCATION_STORAGE_KEY);
+        if (storedData) {
+          setLocation(JSON.parse(storedData));
+        }
+      }, []);
+
+    if(location === null) return null;
     const expiryTime = LOCATION_EXPIRY_DAYS * 24  * 60 * 60 * 1000;   // Converting number to days
-    const isExpired = Date.now() - parsedData.timeStamp > expiryTime;
+    const isExpired = Date.now() - location.timeStamp > expiryTime;
 
-    return isExpired ? null : parsedData;
+    return isExpired ? null : location;
 }
 
 const useLocationTracking = () => {
